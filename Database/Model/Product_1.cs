@@ -7,7 +7,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Database.Model
 {
-    public class Customer : BaseModel
+    public class Product : BaseModel
     {
         [Key]
         [StringLength(128)]

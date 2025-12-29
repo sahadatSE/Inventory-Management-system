@@ -14,7 +14,7 @@ namespace BusinessTest
         }
         static void AddCustomer()
         {
-            Customer customer = new Customer()
+            Product customer = new Product()
             {
                 C_Id = "C123",
                 C_Name = "Sahadat",

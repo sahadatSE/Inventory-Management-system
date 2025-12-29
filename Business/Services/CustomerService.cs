@@ -11,17 +11,17 @@ namespace Business.Services
     public class CustomerService
     {
         public IMSContext context = new();
-        public Result AddCustomer(Customer customer)
+        public Result AddCustomer(Product customer)
         {
             context.Customer.Add(customer);
             return Result.DBcommit(context, "Customer added successfully");
         }
-        public Result DeleteCustomer(Customer customer)
+        public Result DeleteCustomer(Product customer)
         {
             context.Customer.Remove(customer);
             return Result.DBcommit(context, "Customer deleted successfully");
         }
-        public Result UpdateCustomer(Customer customer)
+        public Result UpdateCustomer(Product customer)
         {
             context.Customer.Update(customer);
             return Result.DBcommit(context, "Customer updated successfully");

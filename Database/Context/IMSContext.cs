@@ -12,7 +12,7 @@ namespace Database.Context
                 npgsqlOptions => npgsqlOptions.EnableRetryOnFailure());
         }
 
-        public DbSet<Customer> Customer { get; set; }
+        public DbSet<Product> Customer { get; set; }
         public DbSet<Order> Order { get; set; }
         public DbSet<OrderDetails> OrderDetails { get; set; }
         public DbSet<Product> Product { get; set; }
