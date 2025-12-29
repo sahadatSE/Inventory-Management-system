@@ -5,9 +5,9 @@ using System.Text;
 using System.Threading.Tasks;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-namespace Database
+namespace Database.Model
 {
-    public class Product
+    public class Product : BaseModel
     {
         [Key]
         public int P_Id { get; set; }
@@ -23,7 +23,7 @@ namespace Database
         public int P_Price { get; set; }
 
         [ForeignKey("Supplier")]
-        public int S_Id { get; set; } 
+        public string S_Id { get; set; }  = string.Empty;
 
     }
 }

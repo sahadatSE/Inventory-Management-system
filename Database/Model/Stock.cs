@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Database
+namespace Database.Model 
 {
-    internal class Stock
+    public class Stock : BaseModel
     {
         [Key]
         public int Stock_Id { get; set; }
@@ -22,6 +22,7 @@ namespace Database
         public int Available_Stock {  get; set; }
 
         [ForeignKey("Product")]
+
         public int P_Id { get; set; }
 
     }
