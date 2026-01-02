@@ -17,9 +17,12 @@ namespace Database.Model
 
         public int TotalAmmont { get; set; }
 
-        [ForeignKey("Customer")]
-        [StringLength(128)]
-        public string C_Id { get; set; } = string.Empty;
+        [ForeignKey("User")]
+        public string UserID { get; set; } = string.Empty;
+
+        [ForeignKey("Product")]
+        public string P_Id { get; set; } = string.Empty;
+
 
     }
 }

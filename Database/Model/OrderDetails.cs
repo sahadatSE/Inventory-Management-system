@@ -13,13 +13,21 @@ namespace Database.Model
         [Key]
         public int  ODetailes_Id {  get; set; }
 
-        [ForeignKey("Customer")]
-        [StringLength(128)]
+        [ForeignKey("User")]
+        
+        public string UserID { get; set; } = string.Empty;
 
-        public string C_Id { get; set; } = string.Empty;
+        [ForeignKey("Product")]
+        public string P_Td { get; set; } = string.Empty;
 
-        [ForeignKey("Supplier")]
-        public int S_Id { get; set; }
+        [ForeignKey("Discount")]
+        public int DiscountId { get; set; }
+
+        [ForeignKey("Offer")]
+        public int OfferId { get; set; }
+
+
+
 
 
     }

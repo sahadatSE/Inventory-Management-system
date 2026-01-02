@@ -22,8 +22,12 @@ namespace Database.Model
         public int Available_Stock {  get; set; }
 
         [ForeignKey("Product")]
-
         public int P_Id { get; set; }
+
+        [ForeignKey("User")]
+        public int UserId { get; set; }
+
+        
 
     }
 }
