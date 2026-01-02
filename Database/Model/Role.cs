@@ -14,6 +14,6 @@ namespace Database.Model
         public int RoleId { get; set; }
         [StringLength(50)]
         public string RoleName { get; set; } = string.Empty;
-        public bool IsActive { get; set; }
+        
     }
 }
