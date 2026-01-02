@@ -26,6 +26,11 @@ namespace Business.Services
             context.OrderDetails.Update(orderDetails);
             return Result.DBcommit(context, "OrderDetails updated successfully");
         }
+        public Result GetAllOrderDetails()
+        {
+            var orderDetails = context.OrderDetails.ToList();
+            return new Result(true, "OrderDetails retrieved successfully", orderDetails);
+        }
 
 
 
