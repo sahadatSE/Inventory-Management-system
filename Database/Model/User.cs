@@ -7,22 +7,24 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Database.Model
 {
-    public class Product : BaseModel
+    public class User : BaseModel
     {
         [Key]
         [StringLength(128)]
-        public string C_Id { get; set; } = new Guid().ToString();   
+        public string UserId { get; set; } = new Guid().ToString();   //Chumtu unique identifier
 
         [Required]
         [StringLength(100)]
-        public string C_Name { get; set; } = string.Empty;
+        public string UserName { get; set; } = string.Empty;
 
         [Required]
-        public int C_Number { get; set; }
+        public int UserNumber { get; set; }
 
         [Required]
         [StringLength(100)]
-        public string C_Adress { get; set; } = string.Empty;
+        public string UserAdress { get; set; } = string.Empty;
 
+        [Required]
+        public int RoleId { get; set; } 
     }
 }

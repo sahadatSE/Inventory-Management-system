@@ -12,56 +12,18 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Database.Migrations
 {
     [DbContext(typeof(IMSContext))]
-    [Migration("20251119172543_SomeDescriptiveName")]
-    partial class SomeDescriptiveName
+    [Migration("20260101144714_saha")]
+    partial class saha
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "7.0.19")
+                .HasAnnotation("ProductVersion", "9.0.1")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
-
-            modelBuilder.Entity("Database.Model.Customer", b =>
-                {
-                    b.Property<string>("C_Id")
-                        .HasMaxLength(128)
-                        .HasColumnType("character varying(128)");
-
-                    b.Property<string>("C_Adress")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
-
-                    b.Property<string>("C_Name")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
-
-                    b.Property<int>("C_Number")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("CreatedBy")
-                        .HasMaxLength(128)
-                        .HasColumnType("character varying(128)");
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("UpdatedBy")
-                        .HasMaxLength(128)
-                        .HasColumnType("character varying(128)");
-
-                    b.Property<DateTime>("UpdatedDate")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.HasKey("C_Id");
-
-                    b.ToTable("Customer");
-                });
 
             modelBuilder.Entity("Database.Model.Order", b =>
                 {
@@ -253,6 +215,34 @@ namespace Database.Migrations
                     b.HasKey("S_Id");
 
                     b.ToTable("Suppliers");
+                });
+
+            modelBuilder.Entity("Database.ViewModel.UserRoleInfo", b =>
+                {
+                    b.Property<int>("RoleId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("C_Id")
+                        .HasColumnType("text");
+
+                    b.Property<string>("C_Adress")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("C_Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("C_Number")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("RoleName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("RoleId", "C_Id");
+
+                    b.ToTable("UserRoleInfo");
                 });
 #pragma warning restore 612, 618
         }

@@ -20,7 +20,7 @@ namespace Database.Model
         public int P_Quantity { get; set; }
 
         [Range(1, 100000)]
-        public int P_Price { get; set; }
+        public decimal P_Price { get; set; }
 
         [ForeignKey("Supplier")]
         public string S_Id { get; set; }  = string.Empty;

@@ -10,19 +10,19 @@ namespace BusinessTest
     {
         static void Main(string[] args)
         {
-            AddCustomer();
+            //AddCustomer();
         }
-        static void AddCustomer()
-        {
-            Product customer = new Product()
-            {
-                C_Id = "C123",
-                C_Name = "Sahadat",
-                C_Number = 42,
-                C_Adress = "Uttara"
-            };
-            Result result = new CustomerService().AddCustomer(customer);
-            Console.WriteLine(result.Message);
-        }
+        //static void AddCustomer()
+        //{
+        //    Product customer = new Product()
+        //    {
+        //        C_Id = "C123",
+        //        C_Name = "Sahadat",
+        //        C_Number = 42,
+        //        C_Adress = "Uttara"
+        //    };
+        //    Result result = new UserService().AddCustomer(customer);
+        //    Console.WriteLine(result.Message);
+        //}
     }
 }

@@ -7,25 +7,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Database.Migrations
 {
     /// <inheritdoc />
-    public partial class initialCreate : Migration
+    public partial class saha : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.CreateTable(
-                name: "Customer",
-                columns: table => new
-                {
-                    C_Id = table.Column<string>(type: "character varying(128)", maxLength: 128, nullable: false),
-                    C_Name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
-                    C_Number = table.Column<int>(type: "integer", nullable: false),
-                    C_Adress = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Customer", x => x.C_Id);
-                });
-
             migrationBuilder.CreateTable(
                 name: "Order",
                 columns: table => new
@@ -34,7 +20,11 @@ namespace Database.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     O_Date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     TotalAmmont = table.Column<int>(type: "integer", nullable: false),
-                    C_Id = table.Column<string>(type: "character varying(128)", maxLength: 128, nullable: false)
+                    C_Id = table.Column<string>(type: "character varying(128)", maxLength: 128, nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    UpdatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    CreatedBy = table.Column<string>(type: "character varying(128)", maxLength: 128, nullable: true),
+                    UpdatedBy = table.Column<string>(type: "character varying(128)", maxLength: 128, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -48,7 +38,11 @@ namespace Database.Migrations
                     ODetailes_Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     C_Id = table.Column<string>(type: "character varying(128)", maxLength: 128, nullable: false),
-                    S_Id = table.Column<int>(type: "integer", nullable: false)
+                    S_Id = table.Column<int>(type: "integer", nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    UpdatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    CreatedBy = table.Column<string>(type: "character varying(128)", maxLength: 128, nullable: true),
+                    UpdatedBy = table.Column<string>(type: "character varying(128)", maxLength: 128, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -64,7 +58,11 @@ namespace Database.Migrations
                     P_Name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
                     P_Quantity = table.Column<int>(type: "integer", nullable: false),
                     P_Price = table.Column<int>(type: "integer", nullable: false),
-                    S_Id = table.Column<int>(type: "integer", nullable: false)
+                    S_Id = table.Column<string>(type: "text", nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    UpdatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    CreatedBy = table.Column<string>(type: "character varying(128)", maxLength: 128, nullable: true),
+                    UpdatedBy = table.Column<string>(type: "character varying(128)", maxLength: 128, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -80,7 +78,11 @@ namespace Database.Migrations
                     Quantity_In = table.Column<int>(type: "integer", nullable: false),
                     Quantity_Out = table.Column<int>(type: "integer", nullable: false),
                     Available_Stock = table.Column<int>(type: "integer", nullable: false),
-                    P_Id = table.Column<int>(type: "integer", nullable: false)
+                    P_Id = table.Column<int>(type: "integer", nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    UpdatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    CreatedBy = table.Column<string>(type: "character varying(128)", maxLength: 128, nullable: true),
+                    UpdatedBy = table.Column<string>(type: "character varying(128)", maxLength: 128, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -94,20 +96,37 @@ namespace Database.Migrations
                     S_Id = table.Column<string>(type: "character varying(128)", maxLength: 128, nullable: false),
                     S_Name = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
                     S_Number = table.Column<int>(type: "integer", nullable: false),
-                    S_Adress = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false)
+                    S_Adress = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    UpdatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    CreatedBy = table.Column<string>(type: "character varying(128)", maxLength: 128, nullable: true),
+                    UpdatedBy = table.Column<string>(type: "character varying(128)", maxLength: 128, nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Suppliers", x => x.S_Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "UserRoleInfo",
+                columns: table => new
+                {
+                    C_Id = table.Column<string>(type: "text", nullable: false),
+                    RoleId = table.Column<int>(type: "integer", nullable: false),
+                    C_Name = table.Column<string>(type: "text", nullable: false),
+                    C_Number = table.Column<int>(type: "integer", nullable: false),
+                    C_Adress = table.Column<string>(type: "text", nullable: false),
+                    RoleName = table.Column<string>(type: "text", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UserRoleInfo", x => new { x.RoleId, x.C_Id });
                 });
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropTable(
-                name: "Customer");
-
             migrationBuilder.DropTable(
                 name: "Order");
 
@@ -122,6 +141,9 @@ namespace Database.Migrations
 
             migrationBuilder.DropTable(
                 name: "Suppliers");
+
+            migrationBuilder.DropTable(
+                name: "UserRoleInfo");
         }
     }
 }
