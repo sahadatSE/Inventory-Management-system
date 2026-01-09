@@ -1,0 +1,46 @@
+﻿@page
+@model WebApplication1.Pages.Admin.UserModel
+@{
+    ViewData["Title"] = "User";
+}
+
+<h3 class="mb-3">
+    @(Model.Model.UserId == "0" ? "Add User" : "Edit User")
+</h3>
+
+<form method="post" class="row g-3">
+
+    <!-- Hidden ID -->
+    <input type="hidden" asp-for="Model.UserId" />
+
+    <!-- User Name -->
+    <div class="col-md-6">
+        <label class="form-label">User Name</label>
+        <input class="form-control" asp-for="Model.UserName" />
+        <span class="text-danger" asp-validation-for="Model.UserName"></span>
+    </div>
+
+
+    <!-- Role ID -->
+    <div class="col-md-6">
+        <label class="form-label">Role ID</label>
+        <input class="form-control" asp-for="Model.RoleId" />
+        <span class="text-danger" asp-validation-for="Model.RoleId"></span>
+    </div>
+
+    <!-- Buttons -->
+    <div class="col-12 d-flex gap-2 mt-3">
+        <button type="submit" class="btn btn-primary">
+            @(Model.Model.UserId == "0" ? "Save" : "Update")
+        </button>
+
+        <a asp-page="/Admin/UserList" class="btn btn-secondary">
+            Back to List
+        </a>
+    </div>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
+

@@ -1,0 +1,51 @@
+﻿@page
+@model WebApplication1.Pages.Admin.OrderModel
+@{
+    ViewData["Title"] = "Order";
+}
+
+<h3 class="mb-3">
+    @(Model.Model.O_Id == 0 ? "Add Order" : "Edit Order")
+</h3>
+
+<form method="post" class="row g-3">
+
+    <!-- Hidden Order ID -->
+    <input type="hidden" asp-for="Model.O_Id" />
+
+    <!-- Product ID -->
+    <div class="col-md-4">
+        <label class="form-label">Product ID</label>
+        <input class="form-control" asp-for="Model.P_Id" />
+        <span class="text-danger" asp-validation-for="Model.P_Id"></span>
+    </div>
+
+    <!-- Quantity -->
+    <div class="col-md-4">
+        <label class="form-label">Quantity</label>
+        <input class="form-control" asp-for="Model.P_Quantity" />
+        <span class="text-danger" asp-validation-for="Model.P_Quantity"></span>
+    </div>
+
+    <!-- Total Amount -->
+    <div class="col-md-4">
+        <label class="form-label">Total Amount</label>
+        <input class="form-control" asp-for="Model.TotalAmmont" />
+        <span class="text-danger" asp-validation-for="Model.TotalAmmont"></span>
+    </div>
+
+    <!-- Buttons -->
+    <div class="col-12 d-flex gap-2 mt-3">
+        <button type="submit" class="btn btn-primary">
+            @(Model.Model.O_Id == 0 ? "Save" : "Update")
+        </button>
+
+        <a asp-page="/Admin/OrderList" class="btn btn-secondary">
+            Back to List
+        </a>
+    </div>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -2,24 +2,22 @@ using System.Security.Claims;
 using Business;
 using Business.Services;
 using Database.Model;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace WebApplication1.Pages.Admin
 {
-    
-    public class ProductModel : PageModel
+    public class OrderModel : PageModel
     {
         [BindProperty]
-        public Product Model { get; set; } = new();
+        public Order Model { get; set; } = new();
 
         public void OnGet(int? Id = null)
         {
             if (Id != null)
             {
-                Result result = new ProductService().GetProduct(Id.Value);
-                Model = result.Data as Product ?? new Product();
+                Result result = new OrderService().GetOrder(Id.Value);
+                Model = result.Data as Order ?? new Order();
             }
         }
 
@@ -29,19 +27,16 @@ namespace WebApplication1.Pages.Admin
 
             Result result;
 
-            if (Model.P_Id == 0)
-            {
-                result = new ProductService().AddProduct(Model);
-            }
+            if (Model.O_Id == 0)
+                result = new OrderService().AddOrder(Model);
             else
-            {
-                result = new ProductService().UpdateProduct(Model);
-            }
+                result = new OrderService().UpdateOrder(Model);
 
             if (result.Success)
-                return RedirectToPage("/Admin/ProductList");
+                return RedirectToPage("/Admin/OrderList");
             else
                 return Page();
         }
     }
 }
+

@@ -1,0 +1,59 @@
+﻿@page
+@model WebApplication1.Pages.Admin.OrderDetailesModel
+@{
+    ViewData["Title"] = "Order Details";
+}
+
+<h3 class="mb-3">
+    @(Model.Model.O_Id == 0 ? "Add Order Details" : "Edit Order Details")
+</h3>
+
+<form method="post" class="row g-3">
+
+    <!-- Hidden PK -->
+    <input type="hidden" asp-for="Model.O_Id" />
+
+    <!-- Order ID -->
+    <div class="col-md-4">
+        <label class="form-label">Order ID</label>
+        <input class="form-control" asp-for="Model.O_Id" />
+        <span class="text-danger" asp-validation-for="Model.O_Id"></span>
+    </div>
+
+    <!-- Product ID -->
+    <div class="col-md-4">
+        <label class="form-label">Product ID</label>
+        <input class="form-control" asp-for="Model.P_Id" />
+        <span class="text-danger" asp-validation-for="Model.P_Id"></span>
+    </div>
+
+    <!-- Quantity -->
+    <div class="col-md-4">
+        <label class="form-label">Quantity</label>
+        <input class="form-control" asp-for="Model.P_Quantity" />
+        <span class="text-danger" asp-validation-for="Model.P_Quantity"></span>
+    </div>
+
+    <!-- Unit Price (optional) -->
+    <div class="col-md-4">
+        <label class="form-label">Unit Price</label>
+        <input class="form-control" asp-for="Model.P_Price" />
+        <span class="text-danger" asp-validation-for="Model.P_Price"></span>
+    </div>
+
+    <!-- Buttons -->
+    <div class="col-12 d-flex gap-2 mt-3">
+        <button type="submit" class="btn btn-primary">
+            @(Model.Model.O_Id == 0 ? "Save" : "Update")
+        </button>
+
+        <a asp-page="/Admin/OrderDetailesList" class="btn btn-secondary">
+            Back to List
+        </a>
+    </div>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
+

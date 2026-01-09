@@ -13,7 +13,7 @@ namespace Database.Model
         [Key]
         public int O_Id { get; set; }
 
-        public DateTime O_Date { get; set; } = DateTime.Now;
+        public DateTime O_Date { get; set; } = DateTime.UtcNow;
 
         public int TotalAmmont { get; set; }
 
@@ -22,6 +22,9 @@ namespace Database.Model
 
         [ForeignKey("Product")]
         public string P_Id { get; set; } = string.Empty;
+
+        [ForeignKey("Product")]
+        public int P_Quantity { get; set; }
 
 
     }

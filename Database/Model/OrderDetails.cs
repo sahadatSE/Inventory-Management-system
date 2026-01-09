@@ -18,13 +18,23 @@ namespace Database.Model
         public string UserID { get; set; } = string.Empty;
 
         [ForeignKey("Product")]
-        public string P_Td { get; set; } = string.Empty;
+        public string P_Id { get; set; } = string.Empty;
 
         [ForeignKey("Discount")]
         public int DiscountId { get; set; }
 
         [ForeignKey("Offer")]
         public int OfferId { get; set; }
+
+        [ForeignKey("Product")]
+        public int P_Quantity { get; set; }
+
+        [ForeignKey("Product")]
+        public decimal P_Price { get; set; }
+
+        [ForeignKey("Order")]
+        public int O_Id { get; set; }
+
 
 
 
