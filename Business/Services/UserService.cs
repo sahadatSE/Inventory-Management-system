@@ -41,6 +41,9 @@ namespace Business.Services
             return new Result(true, "User retrieved successfully", user);
         }
 
-
+        public Result List()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

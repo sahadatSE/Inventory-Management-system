@@ -6,18 +6,17 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace WebApplication1.Pages.Admin
 {
-    public class UserModel : PageModel
+    public class UserListModel : PageModel
     {
-
         [BindProperty]
-        public User Model { get; set; } = new();
+        public User model { get; set; } = new();
 
         public void OnGet(int? Id = null)
         {
             if (Id != null)
             {
                 Result result = new UserService().GetUser(Id.Value);
-                Model = result.Data as User ?? new User();
+                model = result.Data as User ?? new User();
             }
         }
 
@@ -25,10 +24,11 @@ namespace WebApplication1.Pages.Admin
         {
             Result result;
 
-            if (Model.UserId =="0")
-                result = new UserService().AddUser(Model);
+         
+            if (model.Id == 0)
+                result = new UserService().AddUser(model);
             else
-                result = new UserService().UpdateUser(Model);
+                result = new UserService().UpdateUser(model);
 
             if (result.Success)
                 return RedirectToPage("/Admin/UserList");

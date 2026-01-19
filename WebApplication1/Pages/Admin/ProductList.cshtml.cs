@@ -25,7 +25,7 @@ namespace WebApplication1.Pages.Admin
             if (result.Success && result.Data is Product product)
             {
                 service.DeleteProduct(product);
-                TempData["Msg"] = "Order details deleted successfully.";
+                TempData["Msg"] = "Product details deleted successfully.";
             }
 
 
