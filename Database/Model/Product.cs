@@ -16,6 +16,7 @@ namespace Database.Model
         [StringLength(100)]
         public string P_Name { get; set; } = string.Empty;
 
+        [Required]
         [Range(0, 10000)]
         public int P_Quantity { get; set; }
 

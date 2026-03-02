@@ -11,7 +11,7 @@ namespace Database.Model
     {
         [Key]
         [StringLength(128)]
-        public string UserId { get; set; } = new Guid().ToString();   //Chumtu unique identifier
+        public string UserId { get; set; } = new Guid().ToString(); 
 
         [Required]
         [StringLength(100)]
@@ -24,7 +24,7 @@ namespace Database.Model
         [StringLength(100)]
         public string UserAdress { get; set; } = string.Empty;
 
-        [Required]
+        
         public int RoleId { get; set; }
         public int Id { get; set; }
     }

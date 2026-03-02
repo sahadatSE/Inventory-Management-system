@@ -4,7 +4,7 @@ namespace Business
 {
     public class Result
     {
-        public bool Success { get; set; }
+        public bool Success { get; set; } //Flag to indicate if the operation was successful or not
         public string Message { get; set; } = "Successful";
         public object? Data { get; set; }
         public Result()

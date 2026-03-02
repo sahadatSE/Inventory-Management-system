@@ -31,7 +31,7 @@ namespace Business.Services
         }
         public Result GetRole(int id)
         {
-            var role = context.Role.Find(id);
+            var role = context.Role.Find(id);//where r.RoleId == id).FirstOrDefault();
 
             if (role == null)
                 return new Result(false, "Role not found");
