@@ -1,3 +1,5 @@
+// User.cshtml.cs
+using System.Security.Claims;
 using Business;
 using Business.Services;
 using Database.Model;
@@ -6,8 +8,9 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace WebApplication1.Pages.Admin
 {
-    public class UserModel : PageModel
+    public class UserModel(UserService service) : PageModel
     {
+        private readonly UserService _service = service;
 
         [BindProperty]
         public User Model { get; set; } = new();
@@ -16,19 +19,20 @@ namespace WebApplication1.Pages.Admin
         {
             if (Id != null)
             {
-                Result result = new UserService().GetUser(Id.Value);
+                Result result = _service.GetUser(Id.Value);
                 Model = result.Data as User ?? new User();
             }
         }
 
         public IActionResult OnPost()
         {
-            Result result;
+            Model.CreatedBy = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
-            if (Model.UserId =="0")
-                result = new UserService().AddUser(Model);
+            Result result;
+            if (Model.UserId == null)
+                result = _service.AddUser(Model);
             else
-                result = new UserService().UpdateUser(Model);
+                result = _service.UpdateUser(Model);
 
             if (result.Success)
                 return RedirectToPage("/Admin/UserList");
@@ -37,4 +41,3 @@ namespace WebApplication1.Pages.Admin
         }
     }
 }
-

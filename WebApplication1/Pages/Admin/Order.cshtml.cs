@@ -7,8 +7,10 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace WebApplication1.Pages.Admin
 {
-    public class OrderModel : PageModel
+    public class OrderModel(OrderService service) : PageModel
     {
+        private readonly OrderService _service = service;
+
         [BindProperty]
         public Order Model { get; set; } = new();
 
@@ -16,7 +18,7 @@ namespace WebApplication1.Pages.Admin
         {
             if (Id != null)
             {
-                Result result = new OrderService().GetOrder(Id.Value);
+                Result result = _service.GetOrder(Id.Value);
                 Model = result.Data as Order ?? new Order();
             }
         }
@@ -26,11 +28,10 @@ namespace WebApplication1.Pages.Admin
             Model.CreatedBy = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
             Result result;
-
             if (Model.O_Id == 0)
-                result = new OrderService().AddOrder(Model);
+                result = _service.AddOrder(Model);
             else
-                result = new OrderService().UpdateOrder(Model);
+                result = _service.UpdateOrder(Model);
 
             if (result.Success)
                 return RedirectToPage("/Admin/OrderList");
@@ -39,4 +40,3 @@ namespace WebApplication1.Pages.Admin
         }
     }
 }
-

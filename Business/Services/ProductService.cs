@@ -8,32 +8,32 @@ using Database.Model;
 
 namespace Business.Services
 {
-    public class ProductService
+    public class ProductService (IMSContext context)
     {
-        public IMSContext context = new();
+        private readonly IMSContext _context = context;
         public Result AddProduct(Product product)
         {
-            context.Product.Add(product);
-            return Result.DBcommit(context, "Product added successfully");
+            _context.Product.Add(product);
+            return Result.DBcommit(_context, "Product added successfully");
         }
         public Result DeleteProduct(Product product)
         {
-            context.Product.Remove(product);
-            return Result.DBcommit(context, "Product deleted successfully");
+            _context.Product.Remove(product);
+            return Result.DBcommit(_context, "Product deleted successfully");
         }
         public Result UpdateProduct(Product product)
         {
-            context.Product.Update(product);
-            return Result.DBcommit(context, "Product updated successfully");
+            _context.Product.Update(product);
+            return Result.DBcommit(_context, "Product updated successfully");
         }
         public Result GetAllProduct()
         {
-            var products = context.Product.ToList();
+            var products = _context.Product.ToList();
             return new Result(true, "Products retrieved successfully", products);
         }
         public Result GetProduct(int id)
         {
-            var product = context.Product.Find(id);
+            var product = _context.Product.Find(id);
             if (product == null)
             {
                 return new Result(false, "Product not found");

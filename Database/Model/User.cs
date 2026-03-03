@@ -19,13 +19,10 @@ namespace Database.Model
 
         [Required]
         public int UserNumber { get; set; }
-
         [Required]
-        [StringLength(100)]
-        public string UserAdress { get; set; } = string.Empty;
+        public string? UserPassword { get; set; } = string.Empty;
 
-        
         public int RoleId { get; set; }
-        public int Id { get; set; }
+    
     }
 }

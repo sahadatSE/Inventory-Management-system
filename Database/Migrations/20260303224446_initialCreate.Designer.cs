@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Database.Migrations
 {
     [DbContext(typeof(IMSContext))]
-    [Migration("20260101145043_Sa")]
-    partial class Sa
+    [Migration("20260303224446_initialCreate")]
+    partial class initialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -25,6 +25,89 @@ namespace Database.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
+            modelBuilder.Entity("Database.Model.Discount", b =>
+                {
+                    b.Property<int>("DiscountId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("DiscountId"));
+
+                    b.Property<string>("CreatedBy")
+                        .HasMaxLength(128)
+                        .HasColumnType("character varying(128)");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("DiscountName")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<decimal>("DiscountValue")
+                        .HasColumnType("numeric");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("UpdatedBy")
+                        .HasMaxLength(128)
+                        .HasColumnType("character varying(128)");
+
+                    b.Property<DateTime>("UpdatedDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("DiscountId");
+
+                    b.ToTable("Discount");
+                });
+
+            modelBuilder.Entity("Database.Model.Offer", b =>
+                {
+                    b.Property<int>("OfferId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("OfferId"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("CreatedBy")
+                        .HasMaxLength(128)
+                        .HasColumnType("character varying(128)");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("DiscountId")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime>("EndDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime>("StartDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("UpdatedBy")
+                        .HasMaxLength(128)
+                        .HasColumnType("character varying(128)");
+
+                    b.Property<DateTime>("UpdatedDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("OfferId");
+
+                    b.ToTable("Offer");
+                });
+
             modelBuilder.Entity("Database.Model.Order", b =>
                 {
                     b.Property<int>("O_Id")
@@ -32,11 +115,6 @@ namespace Database.Migrations
                         .HasColumnType("integer");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("O_Id"));
-
-                    b.Property<string>("C_Id")
-                        .IsRequired()
-                        .HasMaxLength(128)
-                        .HasColumnType("character varying(128)");
 
                     b.Property<string>("CreatedBy")
                         .HasMaxLength(128)
@@ -48,6 +126,13 @@ namespace Database.Migrations
                     b.Property<DateTime>("O_Date")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<string>("P_Id")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("P_Quantity")
+                        .HasColumnType("integer");
+
                     b.Property<int>("TotalAmmont")
                         .HasColumnType("integer");
 
@@ -57,6 +142,10 @@ namespace Database.Migrations
 
                     b.Property<DateTime>("UpdatedDate")
                         .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("UserID")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.HasKey("O_Id");
 
@@ -71,11 +160,6 @@ namespace Database.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("ODetailes_Id"));
 
-                    b.Property<string>("C_Id")
-                        .IsRequired()
-                        .HasMaxLength(128)
-                        .HasColumnType("character varying(128)");
-
                     b.Property<string>("CreatedBy")
                         .HasMaxLength(128)
                         .HasColumnType("character varying(128)");
@@ -83,7 +167,23 @@ namespace Database.Migrations
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<int>("S_Id")
+                    b.Property<int>("DiscountId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("O_Id")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("OfferId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("P_Id")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<decimal>("P_Price")
+                        .HasColumnType("numeric");
+
+                    b.Property<int>("P_Quantity")
                         .HasColumnType("integer");
 
                     b.Property<string>("UpdatedBy")
@@ -92,6 +192,10 @@ namespace Database.Migrations
 
                     b.Property<DateTime>("UpdatedDate")
                         .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("UserID")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.HasKey("ODetailes_Id");
 
@@ -118,8 +222,8 @@ namespace Database.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)");
 
-                    b.Property<int>("P_Price")
-                        .HasColumnType("integer");
+                    b.Property<decimal>("P_Price")
+                        .HasColumnType("numeric");
 
                     b.Property<int>("P_Quantity")
                         .HasColumnType("integer");
@@ -206,6 +310,9 @@ namespace Database.Migrations
                     b.Property<DateTime>("UpdatedDate")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<int>("UserId")
+                        .HasColumnType("integer");
+
                     b.HasKey("Stock_Id");
 
                     b.ToTable("Stock");
@@ -247,6 +354,46 @@ namespace Database.Migrations
                     b.HasKey("S_Id");
 
                     b.ToTable("Suppliers");
+                });
+
+            modelBuilder.Entity("Database.Model.User", b =>
+                {
+                    b.Property<string>("UserId")
+                        .HasMaxLength(128)
+                        .HasColumnType("character varying(128)");
+
+                    b.Property<string>("CreatedBy")
+                        .HasMaxLength(128)
+                        .HasColumnType("character varying(128)");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("RoleId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("UpdatedBy")
+                        .HasMaxLength(128)
+                        .HasColumnType("character varying(128)");
+
+                    b.Property<DateTime>("UpdatedDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("UserName")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<int>("UserNumber")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("UserPassword")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("UserId");
+
+                    b.ToTable("User");
                 });
 
             modelBuilder.Entity("Database.ViewModel.UserRoleInfo", b =>

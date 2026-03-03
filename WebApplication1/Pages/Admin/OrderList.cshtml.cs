@@ -3,33 +3,30 @@ using Business.Services;
 using Database.Model;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using System.Collections.Generic;
 
 namespace WebApplication1.Pages.Admin
 {
-    public class OrderListModel : PageModel
+    public class OrderListModel(OrderService service) : PageModel
     {
+        private readonly OrderService _service = service;
+
         public List<Order> Orders { get; set; } = [];
 
         public void OnGet()
         {
-            Result result = new OrderService().GetAllOrder();
+            Result result = _service.GetAllOrder();
             Orders = result.Data as List<Order> ?? [];
         }
 
         public IActionResult OnPostDelete(int Id)
         {
-            OrderService service = new();
-            Result result = service.GetOrder(Id);
-
+            Result result = _service.GetOrder(Id);
             if (result.Success && result.Data is Order order)
             {
-                service.DeleteOrder(order);
+                _service.DeleteOrder(order);
                 TempData["Msg"] = "Order deleted successfully.";
             }
-
             return RedirectToPage();
         }
     }
 }
-

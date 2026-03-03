@@ -4,37 +4,37 @@ using Database.Model;
 
 namespace Business.Services
 {
-    public class SupplierService
+    public class SupplierService(IMSContext context)
     {
-        public IMSContext context = new();
+        private readonly IMSContext _context = context;
 
         public Result AddSupplier(Supplier supplier)
         {
-            context.Suppliers.Add(supplier);
-            return Result.DBcommit(context, "Supplier added successfully");
+            _context.Suppliers.Add(supplier);
+            return Result.DBcommit(_context, "Supplier added successfully");
         }
 
         public Result UpdateSupplier(Supplier supplier)
         {
-            context.Suppliers.Update(supplier);
-            return Result.DBcommit(context, "Supplier updated successfully");
+            _context.Suppliers.Update(supplier);
+            return Result.DBcommit(_context, "Supplier updated successfully");
         }
 
         public Result DeleteSupplier(Supplier supplier)
         {
-            context.Suppliers.Remove(supplier);
-            return Result.DBcommit(context, "Supplier deleted successfully");
+            _context.Suppliers.Remove(supplier);
+            return Result.DBcommit(_context, "Supplier deleted successfully");
         }
 
         public Result GetAllSupplier()
         {
-            var suppliers = context.Suppliers.ToList();
+            var suppliers = _context.Suppliers.ToList();
             return new Result(true, "Suppliers retrieved successfully", suppliers);
         }
 
         public Result GetSupplier(string id)
         {
-            var supplier = context.Suppliers.Find(id);
+            var supplier = _context.Suppliers.Find(id);
 
             if (supplier == null)
                 return new Result(false, "Supplier not found");

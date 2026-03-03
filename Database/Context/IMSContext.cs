@@ -21,7 +21,6 @@ namespace Database.Context
         public DbSet<Role> Role { get; set; }
         public DbSet<Offer> Offer { get; set; }
         public DbSet<Discount> Discount { get; set; }
-        public DbSet<Notification> Notification { get; set; }
 
 
         //ViewModels

@@ -1,59 +1,413 @@
 ﻿@page
-@model WebApplication1.Pages.Admin.ProductModel
 @{
-    ViewData["Title"] = "Product";
+    ViewData["Title"] = "Products";
 }
 
-<h3 class="mb-3">
-    @(Model.Model.P_Id == 0 ? "Add Product" : "Edit Product")
-</h3>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
 
-<form method="post" class="row g-3">
+<style>
+    .prod-card {
+        border: 2px solid #e2e5ea;
+        border-radius: 14px;
+        overflow: hidden;
+        cursor: pointer;
+        transition: transform .25s, box-shadow .25s, border-color .25s;
+        background: #fff;
+    }
 
-    <!-- Hidden ID for Edit -->
-    <input type="hidden" asp-for="Model.P_Id" />
+        .prod-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 48px rgba(26,86,219,.15);
+            border-color: #1a56db;
+        }
 
-    <!-- Product Name -->
-    <div class="col-md-6">
-        <label class="form-label">Product Name</label>
-        <input class="form-control" asp-for="Model.P_Name" />
-        <span class="text-danger" asp-validation-for="Model.P_Name"></span>
+            .prod-card:hover .card-img-top {
+                transform: scale(1.07);
+            }
+
+    .card-img-top {
+        transition: transform .4s ease;
+        height: 200px;
+        object-fit: cover;
+    }
+
+    .prod-card:hover .card-title {
+        color: #1a56db;
+    }
+
+    .card-title {
+        transition: color .2s;
+        font-weight: 700;
+    }
+
+    .price-tag {
+        font-size: 1.2rem;
+        font-weight: 700;
+        color: #1a56db;
+    }
+
+    .btn-view {
+        transition: all .2s;
+    }
+
+    .prod-card:hover .btn-view {
+        background: #1a56db;
+        color: #fff;
+        border-color: #1a56db;
+    }
+</style>
+
+<div class="container py-5">
+    <h2 class="mb-4 fw-bold">Products</h2>
+    <div class="row row-cols-1 row-cols-md-3 g-4">
+
+        <!-- Card 1 — Watch 1 -->
+        <div class="col">
+            <div class="prod-card h-100" data-bs-toggle="modal" data-bs-target="#modal1">
+                <div style="overflow:hidden">
+                    <img src="/image/watch1.jpeg" class="card-img-top w-100" alt="Watch 1" />
+                </div>
+                <div class="card-body p-3">
+                    <span class="badge bg-success mb-2">New</span>
+                    <h5 class="card-title">Watch 1</h5>
+                    <p class="text-muted small">Elegant classic design with premium finish.</p>
+                    <div class="d-flex align-items-center justify-content-between mt-2">
+                        <span class="price-tag">$199</span>
+                        <span style="color:#f0a500">★★★★★</span>
+                    </div>
+                    <button class="btn btn-outline-primary btn-view w-100 mt-3">View Details</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 2 — Watch 2b -->
+        <div class="col">
+            <div class="prod-card h-100" data-bs-toggle="modal" data-bs-target="#modal2">
+                <div style="overflow:hidden">
+                    <img src="/image/watch2b.jpeg" class="card-img-top w-100" alt="Watch 2" />
+                </div>
+                <div class="card-body p-3">
+                    <span class="badge bg-danger mb-2">Hot</span>
+                    <h5 class="card-title">Watch 2</h5>
+                    <p class="text-muted small">Modern style with luxury build quality.</p>
+                    <div class="d-flex align-items-center justify-content-between mt-2">
+                        <div>
+                            <span class="price-tag">$249</span>
+                            <del class="text-muted small ms-1">$299</del>
+                        </div>
+                        <span style="color:#f0a500">★★★★★</span>
+                    </div>
+                    <button class="btn btn-outline-primary btn-view w-100 mt-3">View Details</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 3 — Watch 3 Current -->
+        <div class="col">
+            <div class="prod-card h-100" data-bs-toggle="modal" data-bs-target="#modal3">
+                <div style="overflow:hidden">
+                    <img src="/image/watch3curren.jpeg" class="card-img-top w-100" alt="Watch 3" />
+                </div>
+                <div class="card-body p-3">
+                    <span class="badge bg-warning text-dark mb-2">Sale</span>
+                    <h5 class="card-title">Watch 3 Current</h5>
+                    <p class="text-muted small">Latest edition with exclusive features.</p>
+                    <div class="d-flex align-items-center justify-content-between mt-2">
+                        <div>
+                            <span class="price-tag">$179</span>
+                            <del class="text-muted small ms-1">$220</del>
+                        </div>
+                        <span style="color:#f0a500">★★★★☆</span>
+                    </div>
+                    <button class="btn btn-outline-primary btn-view w-100 mt-3">View Details</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 4 — Rolex B -->
+        <div class="col">
+            <div class="prod-card h-100" data-bs-toggle="modal" data-bs-target="#modal4">
+                <div style="overflow:hidden">
+                    <img src="/image/marchedesh_bracelet_silver.jpeg" class="card-img-top w-100" alt="Rolex" />
+                </div>
+                <div class="card-body p-3">
+                    <span class="badge bg-success mb-2">New</span>
+                    <h5 class="card-title">Rolex Classic</h5>
+                    <p class="text-muted small">Timeless luxury with Swiss precision.</p>
+                    <div class="d-flex align-items-center justify-content-between mt-2">
+                        <span class="price-tag">$599</span>
+                        <span style="color:#f0a500">★★★★★</span>
+                    </div>
+                    <button class="btn btn-outline-primary btn-view w-100 mt-3">View Details</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 5 — Bracelet gold -->
+        <div class="col">
+            <div class="prod-card h-100" data-bs-toggle="modal" data-bs-target="#modal5">
+                <div style="overflow:hidden">
+                    <img src="/image/marchedesh_bracelet_gold.jpeg" class="card-img-top w-100" alt="Bracelet Black" />
+                </div>
+                <div class="card-body p-3">
+                    <span class="badge bg-danger mb-2">Hot</span>
+                    <h5 class="card-title">Bracelet Black</h5>
+                    <p class="text-muted small">Marchedes black bracelet with elegant design.</p>
+                    <div class="d-flex align-items-center justify-content-between mt-2">
+                        <div>
+                            <span class="price-tag">$89</span>
+                            <del class="text-muted small ms-1">$120</del>
+                        </div>
+                        <span style="color:#f0a500">★★★★★</span>
+                    </div>
+                    <button class="btn btn-outline-primary btn-view w-100 mt-3">View Details</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 6 — Bracelet black -->
+        <div class="col">
+            <div class="prod-card h-100" data-bs-toggle="modal" data-bs-target="#modal6">
+                <div style="overflow:hidden">
+                    <img src="/image/marchedes_bracelet_black.jpeg" class="card-img-top w-100" alt="Marchedes Black color Bracelet" />
+                </div>
+                <div class="card-body p-3">
+                    <span class="badge bg-warning text-dark mb-2">HOT</span>
+                    <h5 class="card-title">Marchedes Black color Bracelet</h5>
+                    <p class="text-muted small">Marchedes Black color Bracelet premium quality.</p>
+                    <div class="d-flex align-items-center justify-content-between mt-2">
+                        <div>
+                            <span class="price-tag">TK 550</span>
+                            <del class="text-muted small ms-1">TK 600</del>
+                        </div>
+                        <span style="color:#f0a500">★★★★★</span>
+                    </div>
+                    <button class="btn btn-outline-primary btn-view w-100 mt-3">View Details</button>
+                </div>
+            </div>
+        </div>
+
     </div>
+</div>
 
-    <!-- Product Quantity -->
-    <div class="col-md-3">
-        <label class="form-label">Quantity</label>
-        <input class="form-control" asp-for="Model.P_Quantity" />
-        <span class="text-danger" asp-validation-for="Model.P_Quantity"></span>
+<!-- Modal 1 — Watch 1 -->
+<div class="modal fade" id="modal1" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content border-0 shadow-lg" style="border-radius:16px;overflow:hidden">
+            <div class="row g-0">
+                <div class="col-md-5">
+                    <img src="/image/watch1.jpeg" class="img-fluid h-100" style="object-fit:cover" alt="Watch 1" />
+                </div>
+                <div class="col-md-7">
+                    <div class="modal-body p-4">
+                        <button type="button" class="btn-close float-end" data-bs-dismiss="modal"></button>
+                        <span class="badge bg-success mb-2">New</span>
+                        <h4 class="fw-bold">Watch 1</h4>
+                        <div class="mb-2" style="color:#f0a500">★★★★★ <span class="text-muted small">4.8 (150 reviews)</span></div>
+                        <div class="mb-3">
+                            <span class="fs-3 fw-bold text-primary">$199</span>
+                        </div>
+                        <p class="text-muted">Elegant classic design with premium quality materials and reliable timekeeping mechanism.</p>
+                        <div class="row g-2 mb-3">
+                            <div class="col-6"><div class="bg-light rounded p-2"><small class="text-muted d-block">Type</small><strong>Analog</strong></div></div>
+                            <div class="col-6"><div class="bg-light rounded p-2"><small class="text-muted d-block">Material</small><strong>Stainless Steel</strong></div></div>
+                            <div class="col-6"><div class="bg-light rounded p-2"><small class="text-muted d-block">Water Resist</small><strong>50m</strong></div></div>
+                            <div class="col-6"><div class="bg-light rounded p-2"><small class="text-muted d-block">Warranty</small><strong>2 Years</strong></div></div>
+                        </div>
+                        <div class="d-flex gap-2">
+                            <button class="btn btn-primary flex-grow-1">Add to Cart</button>
+                            <button class="btn btn-outline-danger">&#9825;</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
+</div>
 
-    <!-- Product Price -->
-    <div class="col-md-3">
-        <label class="form-label">Price</label>
-        <input class="form-control" asp-for="Model.P_Price" />
-        <span class="text-danger" asp-validation-for="Model.P_Price"></span>
+<!-- Modal 2 — Watch 2 -->
+<div class="modal fade" id="modal2" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content border-0 shadow-lg" style="border-radius:16px;overflow:hidden">
+            <div class="row g-0">
+                <div class="col-md-5">
+                    <img src="/image/watch2b.jpeg" class="img-fluid h-100" style="object-fit:cover" alt="Watch 2" />
+                </div>
+                <div class="col-md-7">
+                    <div class="modal-body p-4">
+                        <button type="button" class="btn-close float-end" data-bs-dismiss="modal"></button>
+                        <span class="badge bg-danger mb-2">Hot</span>
+                        <h4 class="fw-bold">Watch 2</h4>
+                        <div class="mb-2" style="color:#f0a500">★★★★★ <span class="text-muted small">4.9 (210 reviews)</span></div>
+                        <div class="mb-3">
+                            <span class="fs-3 fw-bold text-primary">$249</span>
+                            <del class="text-muted ms-2">$299</del>
+                            <span class="badge bg-danger ms-2">17% OFF</span>
+                        </div>
+                        <p class="text-muted">Modern style with luxury build quality. Features sapphire crystal glass and genuine leather strap.</p>
+                        <div class="row g-2 mb-3">
+                            <div class="col-6"><div class="bg-light rounded p-2"><small class="text-muted d-block">Glass</small><strong>Sapphire Crystal</strong></div></div>
+                            <div class="col-6"><div class="bg-light rounded p-2"><small class="text-muted d-block">Strap</small><strong>Genuine Leather</strong></div></div>
+                            <div class="col-6"><div class="bg-light rounded p-2"><small class="text-muted d-block">Water Resist</small><strong>100m</strong></div></div>
+                            <div class="col-6"><div class="bg-light rounded p-2"><small class="text-muted d-block">Warranty</small><strong>3 Years</strong></div></div>
+                        </div>
+                        <div class="d-flex gap-2">
+                            <button class="btn btn-primary flex-grow-1">Add to Cart</button>
+                            <button class="btn btn-outline-danger">&#9825;</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
+</div>
 
-    <!-- Supplier ID -->
-    <div class="col-md-6">
-        <label class="form-label">Supplier ID</label>
-        <input class="form-control" asp-for="Model.S_Id" />
-        <span class="text-danger" asp-validation-for="Model.S_Id"></span>
+<!-- Modal 3 — Watch 3 -->
+<div class="modal fade" id="modal3" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content border-0 shadow-lg" style="border-radius:16px;overflow:hidden">
+            <div class="row g-0">
+                <div class="col-md-5">
+                    <img src="/image/watch3curren.jpeg" class="img-fluid h-100" style="object-fit:cover" alt="Watch 3" />
+                </div>
+                <div class="col-md-7">
+                    <div class="modal-body p-4">
+                        <button type="button" class="btn-close float-end" data-bs-dismiss="modal"></button>
+                        <span class="badge bg-warning text-dark mb-2">Sale</span>
+                        <h4 class="fw-bold">Watch 3 Current</h4>
+                        <div class="mb-2" style="color:#f0a500">★★★★☆ <span class="text-muted small">4.5 (98 reviews)</span></div>
+                        <div class="mb-3">
+                            <span class="fs-3 fw-bold text-primary">$179</span>
+                            <del class="text-muted ms-2">$220</del>
+                            <span class="badge bg-danger ms-2">19% OFF</span>
+                        </div>
+                        <p class="text-muted">Latest current edition with exclusive features and modern dial design. Perfect for everyday wear.</p>
+                        <div class="row g-2 mb-3">
+                            <div class="col-6"><div class="bg-light rounded p-2"><small class="text-muted d-block">Type</small><strong>Quartz</strong></div></div>
+                            <div class="col-6"><div class="bg-light rounded p-2"><small class="text-muted d-block">Case Size</small><strong>42mm</strong></div></div>
+                            <div class="col-6"><div class="bg-light rounded p-2"><small class="text-muted d-block">Water Resist</small><strong>30m</strong></div></div>
+                            <div class="col-6"><div class="bg-light rounded p-2"><small class="text-muted d-block">Warranty</small><strong>1 Year</strong></div></div>
+                        </div>
+                        <div class="d-flex gap-2">
+                            <button class="btn btn-primary flex-grow-1">Add to Cart</button>
+                            <button class="btn btn-outline-danger">&#9825;</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
+</div>
 
-    <!-- Buttons -->
-    <div class="col-12 d-flex gap-2 mt-3">
-        <button type="submit" class="btn btn-primary">
-            @(Model.Model.P_Id == 0 ? "Save" : "Update")
-        </button>
-
-        <a asp-page="/Admin/ProductList" class="btn btn-secondary">
-            Back to List
-        </a>
+<!-- Modal 4 — Rolex -->
+<div class="modal fade" id="modal4" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content border-0 shadow-lg" style="border-radius:16px;overflow:hidden">
+            <div class="row g-0">
+                <div class="col-md-5">
+                    <img src="/image/marchedesh_bracelet_silver.jpeg" class="img-fluid h-100" style="object-fit:cover" alt="Rolex" />
+                </div>
+                <div class="col-md-7">
+                    <div class="modal-body p-4">
+                        <button type="button" class="btn-close float-end" data-bs-dismiss="modal"></button>
+                        <span class="badge bg-success mb-2">New</span>
+                        <h4 class="fw-bold">Rolex Classic</h4>
+                        <div class="mb-2" style="color:#f0a500">★★★★★ <span class="text-muted small">5.0 (320 reviews)</span></div>
+                        <div class="mb-3">
+                            <span class="fs-3 fw-bold text-primary">$599</span>
+                        </div>
+                        <p class="text-muted">Timeless luxury with Swiss precision engineering. The ultimate statement of elegance and style.</p>
+                        <div class="row g-2 mb-3">
+                            <div class="col-6"><div class="bg-light rounded p-2"><small class="text-muted d-block">Brand</small><strong>Rolex</strong></div></div>
+                            <div class="col-6"><div class="bg-light rounded p-2"><small class="text-muted d-block">Movement</small><strong>Swiss Automatic</strong></div></div>
+                            <div class="col-6"><div class="bg-light rounded p-2"><small class="text-muted d-block">Water Resist</small><strong>300m</strong></div></div>
+                            <div class="col-6"><div class="bg-light rounded p-2"><small class="text-muted d-block">Warranty</small><strong>5 Years</strong></div></div>
+                        </div>
+                        <div class="d-flex gap-2">
+                            <button class="btn btn-primary flex-grow-1">Add to Cart</button>
+                            <button class="btn btn-outline-danger">&#9825;</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
+</div>
 
-</form>
+<!-- Modal 5 — Bracelet gold -->
+<div class="modal fade" id="modal5" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content border-0 shadow-lg" style="border-radius:16px;overflow:hidden">
+            <div class="row g-0">
+                <div class="col-md-5">
+                    <img src="/image/marchedesh_bracelet_gold.jpeg" class="img-fluid h-100" style="object-fit:cover" alt="Bracelet Black" />
+                </div>
+                <div class="col-md-7">
+                    <div class="modal-body p-4">
+                        <button type="button" class="btn-close float-end" data-bs-dismiss="modal"></button>
+                        <span class="badge bg-danger mb-2">Hot</span>
+                        <h4 class="fw-bold">Bracelet Black</h4>
+                        <div class="mb-2" style="color:#f0a500">★★★★★ <span class="text-muted small">4.7 (180 reviews)</span></div>
+                        <div class="mb-3">
+                            <span class="fs-3 fw-bold text-primary">$89</span>
+                            <del class="text-muted ms-2">$120</del>
+                            <span class="badge bg-danger ms-2">26% OFF</span>
+                        </div>
+                        <p class="text-muted">Marchedes black bracelet with elegant design, perfect for casual and formal occasions.</p>
+                        <div class="row g-2 mb-3">
+                            <div class="col-6"><div class="bg-light rounded p-2"><small class="text-muted d-block">Color</small><strong>Black</strong></div></div>
+                            <div class="col-6"><div class="bg-light rounded p-2"><small class="text-muted d-block">Material</small><strong>Premium Alloy</strong></div></div>
+                            <div class="col-6"><div class="bg-light rounded p-2"><small class="text-muted d-block">Size</small><strong>Adjustable</strong></div></div>
+                            <div class="col-6"><div class="bg-light rounded p-2"><small class="text-muted d-block">Warranty</small><strong>1 Year</strong></div></div>
+                        </div>
+                        <div class="d-flex gap-2">
+                            <button class="btn btn-primary flex-grow-1">Add to Cart</button>
+                            <button class="btn btn-outline-danger">&#9825;</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal 6 — Bracelet black -->
+<div class="modal fade" id="modal6" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content border-0 shadow-lg" style="border-radius:16px;overflow:hidden">
+            <div class="row g-0">
+                <div class="col-md-5">
+                    <img src="/image/marchedes_bracelet_black.jpeg" class="img-fluid h-100" style="object-fit:cover" alt="Marchedes Black color Bracelet" />
+                </div>
+                <div class="col-md-7">
+                    <div class="modal-body p-4">
+                        <button type="button" class="btn-close float-end" data-bs-dismiss="modal"></button>
+                        <span class="badge bg-warning text-dark mb-2">Sale</span>
+                        <h4 class="fw-bold">Marchedes Black color Bracelet</h4>
+                        <div class="mb-2" style="color:#f0a500">★★★★★ <span class="text-muted small">4.9 (140 reviews)</span></div>
+                        <div class="mb-3">
+                            <span class="fs-3 fw-bold text-primary">TK 549</span>
+                            <del class="text-muted ms-2">TK 600</del>
+                            <span class="badge bg-danger ms-2">19% OFF</span>
+                        </div>
+                        <p class="text-muted">Marchedesh gold bracelet with premium quality finish. Luxurious look for every occasion.</p>
+                        <div class="row g-2 mb-3">
+                            <div class="col-6"><div class="bg-light rounded p-2"><small class="text-muted d-block">Color</small><strong>Black</strong></div></div>
+                            <div class="col-6"><div class="bg-light rounded p-2"><small class="text-muted d-block">Material</small><strong>Stealness steal</strong></div></div>
+                            <div class="col-6"><div class="bg-light rounded p-2"><small class="text-muted d-block">Size</small><strong>Chain system</strong></div></div>
+                            <div class="col-6"><div class="bg-light rounded p-2"><small class="text-muted d-block">Warranty</small><strong>1 Year</strong></div></div>
+                        </div>
+                        <div class="d-flex gap-2">
+                            <button class="btn btn-primary flex-grow-1">Add to Cart</button>
+                            <button class="btn btn-outline-danger">&#9825;</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
 @section Scripts {
-    <partial name="_ValidationScriptsPartial" />
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 }

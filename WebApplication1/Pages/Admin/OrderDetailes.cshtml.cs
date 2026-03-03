@@ -6,8 +6,10 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace WebApplication1.Pages.Admin
 {
-    public class OrderDetailesModel : PageModel
+    public class OrderDetailesModel(OrderDetailesService service) : PageModel
     {
+        private readonly OrderDetailesService _service = service;
+
         [BindProperty]
         public OrderDetails Model { get; set; } = new();
 
@@ -15,7 +17,7 @@ namespace WebApplication1.Pages.Admin
         {
             if (Id != null)
             {
-                Result result = new OrderDetailesService().GetOrderDetails(Id.Value);
+                Result result = _service.GetOrderDetails(Id.Value);
                 Model = result.Data as OrderDetails ?? new OrderDetails();
             }
         }
@@ -23,11 +25,10 @@ namespace WebApplication1.Pages.Admin
         public IActionResult OnPost()
         {
             Result result;
-
             if (Model.O_Id == 0)
-                result = new OrderDetailesService().AddOrderDetails(Model);
+                result = _service.AddOrderDetails(Model);
             else
-                result = new OrderDetailesService().UpdateOrderDetails(Model);
+                result = _service.UpdateOrderDetails(Model);
 
             if (result.Success)
                 return RedirectToPage("/Admin/OrderDetailesList");
@@ -36,4 +37,3 @@ namespace WebApplication1.Pages.Admin
         }
     }
 }
-

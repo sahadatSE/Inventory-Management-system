@@ -8,32 +8,32 @@ using Database.Model;
 
 namespace Business.Services
 {
-    public class DiscountService
+    public class DiscountService(IMSContext context)
     {
-        public IMSContext context = new();  
+        private readonly IMSContext _context = context;  
         public Result AddDiscount(Discount discount)
         {
-            context.Discount.Add(discount);
-            return Result.DBcommit(context, "Discount added successfully");
+            _context.Discount.Add(discount);
+            return Result.DBcommit(_context, "Discount added successfully");
         }
         public Result DeleteDiscount(Discount discount)
         {
-            context.Discount.Remove(discount);
-            return Result.DBcommit(context, "Discount deleted successfully");
+            _context.Discount.Remove(discount);
+            return Result.DBcommit(_context, "Discount deleted successfully");
         }
         public Result UpdateDiscount(Discount discount)
         {
-            context.Discount.Update(discount);
-            return Result.DBcommit(context, "Discount updated successfully");
+            _context.Discount.Update(discount);
+            return Result.DBcommit(_context, "Discount updated successfully");
         }
         public Result GetAllDiscounts()
         {
-            var discounts = context.Discount.ToList();
+            var discounts = _context.Discount.ToList();
             return new Result(true, "Discounts retrieved successfully", discounts);
         }
         public Result GetDiscount(int id)
         {
-            var discount = context.Discount.Find(id);
+            var discount = _context.Discount.Find(id);
             if (discount == null)
             {
                 return new Result(false, "Discount not found");

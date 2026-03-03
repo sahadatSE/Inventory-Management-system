@@ -376,11 +376,6 @@ namespace Database.Migrations
                     b.Property<DateTime>("UpdatedDate")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<string>("UserAdress")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
-
                     b.Property<string>("UserName")
                         .IsRequired()
                         .HasMaxLength(100)
@@ -388,6 +383,10 @@ namespace Database.Migrations
 
                     b.Property<int>("UserNumber")
                         .HasColumnType("integer");
+
+                    b.Property<string>("UserPassword")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.HasKey("UserId");
 

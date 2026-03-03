@@ -3,32 +3,29 @@ using Business.Services;
 using Database.Model;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using System.Collections.Generic;
 
 namespace WebApplication1.Pages.Admin
 {
-    public class ProductListModel : PageModel
+    public class ProductListModel(ProductService service) : PageModel
     {
+        private readonly ProductService _service = service;
+
         public List<Product> Products { get; set; } = [];
 
         public void OnGet()
         {
-            Result result = new ProductService().GetAllProduct();
+            Result result = _service.GetAllProduct();
             Products = result.Data as List<Product> ?? [];
         }
 
         public IActionResult OnPostDelete(int Id)
         {
-            ProductService service = new();
-            Result result = service.GetProduct(Id);
-
+            Result result = _service.GetProduct(Id);
             if (result.Success && result.Data is Product product)
             {
-                service.DeleteProduct(product);
+                _service.DeleteProduct(product);
                 TempData["Msg"] = "Product details deleted successfully.";
             }
-
-
             return RedirectToPage();
         }
     }

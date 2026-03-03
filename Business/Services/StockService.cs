@@ -8,32 +8,32 @@ using Database.Model;
 
 namespace Business.Services
 {
-    public class StockService
+    public class StockService(IMSContext context)
     {
-        public IMSContext context = new();
+        private readonly IMSContext _context = context;
         public Result AddStock (Stock stock)
         {
-            context.Stock.Add(stock);
-            return Result.DBcommit(context, "Stock added successfully");
+            _context.Stock.Add(stock);
+            return Result.DBcommit(_context, "Stock added successfully");
         }
         public Result DeleteStock (Stock stock)
         {
-             context.Stock.Remove(stock);
-            return Result.DBcommit(context, "Stock deleted successfully");
+            _context.Stock.Remove(stock);
+            return Result.DBcommit(_context, "Stock deleted successfully");
         }
         public Result UpdateStock (Stock stock)
         {
-            context.Stock.Update(stock);
-            return Result.DBcommit(context, "Stock updated successfully");
+            _context.Stock.Update(stock);
+            return Result.DBcommit(_context, "Stock updated successfully");
         }
         public Result GetAllStocks()
         {
-            var stocks = context.Stock.ToList();
+            var stocks = _context.Stock.ToList();
             return new Result(true, "Stocks retrieved successfully", stocks);
         }
         public Result GetStock (int id)
         {
-            var stock = context.Stock.Find(id);
+            var stock = _context.Stock.Find(id);
             if (stock == null)
             {
                 return new Result(false, "Stock not found");

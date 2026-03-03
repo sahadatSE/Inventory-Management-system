@@ -6,35 +6,24 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace WebApplication1.Pages.Admin
 {
-    public class UserListModel : PageModel
+    public class UserListModel(UserService service) : PageModel
     {
-        [BindProperty]
-        public User model { get; set; } = new();
+        private readonly UserService _service = service;
 
-        public void OnGet(int? Id = null)
+        public List<User> Users { get; set; } = new();
+
+        public void OnGet()
         {
-            if (Id != null)
-            {
-                Result result = new UserService().GetUser(Id.Value);
-                model = result.Data as User ?? new User();
-            }
+            Result result = _service.GetAllUser();
+            Users = result.Data as List<User> ?? new List<User>();
         }
 
-        public IActionResult OnPost()
+        public IActionResult OnPostDelete(int id)
         {
-            Result result;
-
-         
-            if (model.Id == 0)
-                result = new UserService().AddUser(model);
-            else
-                result = new UserService().UpdateUser(model);
-
-            if (result.Success)
-                return RedirectToPage("/Admin/UserList");
-            else
-                return Page();
+            Result getResult = _service.GetUser(id);
+            User user = getResult.Data as User ?? new User();
+            _service.DeleteUser(user);
+            return RedirectToPage("/Admin/UserList");
         }
     }
 }
-

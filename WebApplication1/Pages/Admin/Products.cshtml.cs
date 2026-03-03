@@ -2,15 +2,15 @@ using System.Security.Claims;
 using Business;
 using Business.Services;
 using Database.Model;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace WebApplication1.Pages.Admin
 {
-    
-    public class ProductModel : PageModel
+    public class ProductModel(ProductService service) : PageModel
     {
+        private readonly ProductService _service = service;
+
         [BindProperty]
         public Product Model { get; set; } = new();
 
@@ -18,7 +18,7 @@ namespace WebApplication1.Pages.Admin
         {
             if (Id != null)
             {
-                Result result = new ProductService().GetProduct(Id.Value);
+                Result result = _service.GetProduct(Id.Value);
                 Model = result.Data as Product ?? new Product();
             }
         }
@@ -28,15 +28,10 @@ namespace WebApplication1.Pages.Admin
             Model.CreatedBy = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
             Result result;
-
             if (Model.P_Id == 0)
-            {
-                result = new ProductService().AddProduct(Model);
-            }
+                result = _service.AddProduct(Model);
             else
-            {
-                result = new ProductService().UpdateProduct(Model);
-            }
+                result = _service.UpdateProduct(Model);
 
             if (result.Success)
                 return RedirectToPage("/Admin/ProductList");
