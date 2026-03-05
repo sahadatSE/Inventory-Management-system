@@ -1,5 +1,3 @@
-// User.cshtml.cs
-using System.Security.Claims;
 using Business;
 using Business.Services;
 using Database.Model;
@@ -15,29 +13,45 @@ namespace WebApplication1.Pages.Admin
         [BindProperty]
         public User Model { get; set; } = new();
 
-        public void OnGet(int? Id = null)
+        public void OnGet(string? Id = null)
         {
-            if (Id != null)
+            if (!string.IsNullOrEmpty(Id))
             {
-                Result result = _service.GetUser(Id.Value);
+                Result result = _service.GetUser(int.Parse(Id));
                 Model = result.Data as User ?? new User();
             }
         }
 
         public IActionResult OnPost()
         {
-            Model.CreatedBy = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            ModelState.Clear();
 
             Result result;
-            if (Model.UserId == null)
+
+           
+            bool isNew = string.IsNullOrEmpty(Model.UserId)
+                         || Model.UserId == "00000000-0000-0000-0000-000000000000";
+
+            if (isNew)
+            {
+                Model.UserId = Guid.NewGuid().ToString(); 
                 result = _service.AddUser(Model);
+            }
             else
+            {
                 result = _service.UpdateUser(Model);
+            }
 
             if (result.Success)
+            {
+                TempData["SuccessMessage"] = result.Message;
                 return RedirectToPage("/Admin/UserList");
+            }
             else
+            {
+                ModelState.AddModelError("", result.Message);
                 return Page();
+            }
         }
     }
 }

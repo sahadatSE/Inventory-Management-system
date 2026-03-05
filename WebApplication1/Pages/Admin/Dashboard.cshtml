@@ -1,0 +1,468 @@
+﻿@page
+@model WebApplication1.Pages.Admin.DashboardModel
+@{
+    ViewData["Title"] = "Dashboard";
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet" />
+    <style>
+        body {
+            background-color: #f0f2f5;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+     
+        .stat-card {
+            border: none;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            transition: transform 0.2s;
+        }
+
+            .stat-card:hover {
+                transform: translateY(-4px);
+            }
+
+        .stat-icon-box {
+            width: 56px;
+            height: 56px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.6rem;
+        }
+
+   
+        .chart-wrapper {
+            display: flex;
+            align-items: flex-end;
+            gap: 20px;
+            height: 220px;
+            padding: 0 10px 0 10px;
+            border-bottom: 2px solid #dee2e6;
+            border-left: 2px solid #dee2e6;
+            overflow-x: auto;
+            position: relative;
+        }
+
+        .bar-group {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            min-width: 70px;
+        }
+
+        .bar-wrap {
+            display: flex;
+            align-items: flex-end;
+            gap: 5px;
+            height: 200px;
+        }
+
+        .bar-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 3px;
+        }
+
+        .bar {
+            width: 26px;
+            border-radius: 5px 5px 0 0;
+            transition: opacity 0.2s, transform 0.2s;
+            cursor: pointer;
+        }
+
+            .bar:hover {
+                opacity: 0.85;
+                transform: scaleY(1.03);
+                transform-origin: bottom;
+            }
+
+        .bar-value {
+            font-size: 0.68rem;
+            font-weight: 700;
+            color: #333;
+        }
+
+        .bar-product-label {
+            font-size: 0.72rem;
+            color: #555;
+            text-align: center;
+            max-width: 75px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            font-weight: 600;
+        }
+
+  
+        .y-axis {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            height: 200px;
+            padding-bottom: 2px;
+            font-size: 0.68rem;
+            color: #999;
+            text-align: right;
+            min-width: 30px;
+        }
+
+    
+        .chart-legend {
+            display: flex;
+            gap: 20px;
+            font-size: 0.8rem;
+            margin-top: 12px;
+            flex-wrap: wrap;
+        }
+
+        .legend-dot {
+            width: 13px;
+            height: 13px;
+            border-radius: 3px;
+            display: inline-block;
+            margin-right: 5px;
+            vertical-align: middle;
+        }
+
+    
+        .section-title {
+            font-size: 1rem;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 4px;
+        }
+
+        .section-sub {
+            font-size: 0.8rem;
+            color: #888;
+            margin-bottom: 16px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid px-4 mt-4">
+
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h3 class="fw-bold mb-0">📊 Admin Dashboard</h3>
+                <small class="text-muted">Inventory Management System — Overview</small>
+            </div>
+            <span class="badge bg-secondary fs-6">
+                <i class="bi bi-calendar3"></i>
+                @DateTime.Now.ToString("dd MMM yyyy")
+            </span>
+        </div>
+
+        <div class="row g-4 mb-4">
+
+            <div class="col-md-4">
+                <div class="stat-card bg-white">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <p class="text-muted small mb-1">Total Registered Users</p>
+                            <h2 class="fw-bold text-primary mb-0">@Model.TotalUsers</h2>
+                            <small class="text-muted">All system users</small>
+                        </div>
+                        <div class="stat-icon-box bg-primary bg-opacity-10 text-primary">
+                            <i class="bi bi-people-fill"></i>
+                        </div>
+                    </div>
+                    <hr class="my-2" />
+                    <a href="/Admin/UserList" class="text-decoration-none text-primary small fw-semibold">
+                        View All Users <i class="bi bi-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="stat-card bg-white">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <p class="text-muted small mb-1">Total Stock Entries</p>
+                            <h2 class="fw-bold text-success mb-0">@Model.TotalStockRecords</h2>
+                            <small class="text-muted">All stock records</small>
+                        </div>
+                        <div class="stat-icon-box bg-success bg-opacity-10 text-success">
+                            <i class="bi bi-box-seam-fill"></i>
+                        </div>
+                    </div>
+                    <hr class="my-2" />
+                    <a href="/Admin/StockList" class="text-decoration-none text-success small fw-semibold">
+                        View All Stocks <i class="bi bi-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="stat-card bg-white">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <p class="text-muted small mb-1">Total Available Stock</p>
+                            <h2 class="fw-bold text-warning mb-0">@Model.TotalAvailableStock</h2>
+                            <small class="text-muted">Current in-hand quantity</small>
+                        </div>
+                        <div class="stat-icon-box bg-warning bg-opacity-10 text-warning">
+                            <i class="bi bi-archive-fill"></i>
+                        </div>
+                    </div>
+                    <hr class="my-2" />
+                    <a href="/Admin/StockList" class="text-decoration-none text-warning small fw-semibold">
+                        View Details <i class="bi bi-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="row g-4 mb-4">
+
+            <div class="col-md-8">
+                <div class="card border-0 shadow-sm rounded-3">
+                    <div class="card-body">
+                        <p class="section-title">Stock Overview by Product</p>
+                        <p class="section-sub">Quantity In, Quantity Out and Available Stock per product</p>
+
+                        @{
+                            int maxVal = Model.AvailableList.Count > 0
+                            ? Model.AvailableList.Max(s => s.Quantity_In) : 1;
+                            if (maxVal == 0) maxVal = 1;
+                            int step = maxVal / 4 == 0 ? 1 : maxVal / 4;
+                        }
+
+                        <div class="d-flex gap-2">
+                            <div class="y-axis">
+                                <span>@(maxVal)</span>
+                                <span>@(maxVal * 3 / 4)</span>
+                                <span>@(maxVal / 2)</span>
+                                <span>@(maxVal / 4)</span>
+                                <span>0</span>
+                            </div>
+
+                            <div class="chart-wrapper flex-grow-1">
+                                @foreach (var item in Model.AvailableList)
+                                {
+                                    int inH = (int)((double)item.Quantity_In / maxVal * 190);
+                                    int outH = (int)((double)item.Quantity_Out / maxVal * 190);
+                                    int availH = item.Available_Stock > 0
+                                    ? (int)((double)item.Available_Stock / maxVal * 190) : 0;
+                                    <div class="bar-group">
+                                        <div class="bar-wrap">
+                                            <div class="bar-item">
+                                                <span class="bar-value text-primary">@item.Quantity_In</span>
+                                                <div class="bar bg-primary" style="height:@(inH)px;"
+                                                     title="Qty In: @item.Quantity_In"></div>
+                                            </div>
+                                            <div class="bar-item">
+                                                <span class="bar-value text-danger">@item.Quantity_Out</span>
+                                                <div class="bar bg-danger" style="height:@(outH)px;"
+                                                     title="Qty Out: @item.Quantity_Out"></div>
+                                            </div>
+                                            <div class="bar-item">
+                                                <span class="bar-value text-success">@item.Available_Stock</span>
+                                                <div class="bar bg-success" style="height:@(availH)px;"
+                                                     title="Available: @item.Available_Stock"></div>
+                                            </div>
+                                        </div>
+                                        <div class="bar-product-label">@item.P_Name</div>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+
+                        <div class="chart-legend">
+                            <span><span class="legend-dot bg-primary"></span>Quantity In</span>
+                            <span><span class="legend-dot bg-danger"></span>Quantity Out</span>
+                            <span><span class="legend-dot bg-success"></span>Available Stock</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card border-0 shadow-sm rounded-3 h-100">
+                    <div class="card-body">
+                        <p class="section-title">System Summary</p>
+                        <p class="section-sub">Users, Stock Records & Available Stock</p>
+
+                        @{
+                            int maxSummary = Math.Max(
+                            Math.Max(Model.TotalUsers, Model.TotalStockRecords),
+                            Math.Max(Model.TotalAvailableStock, 1)
+                            );
+                            int uH = (int)((double)Model.TotalUsers / maxSummary * 190);
+                            int sH = (int)((double)Model.TotalStockRecords / maxSummary * 190);
+                            int aH = (int)((double)Model.TotalAvailableStock / maxSummary * 190);
+                        }
+
+                        <div class="d-flex gap-2">
+                            <div class="y-axis">
+                                <span>@maxSummary</span>
+                                <span>@(maxSummary * 3 / 4)</span>
+                                <span>@(maxSummary / 2)</span>
+                                <span>@(maxSummary / 4)</span>
+                                <span>0</span>
+                            </div>
+
+                            <div class="chart-wrapper flex-grow-1 justify-content-center">
+                                <div class="bar-group">
+                                    <div class="bar-wrap">
+                                        <div class="bar-item">
+                                            <span class="bar-value text-info">@Model.TotalUsers</span>
+                                            <div class="bar bg-info" style="height:@(uH)px; width:34px;"
+                                                 title="Total Users: @Model.TotalUsers"></div>
+                                        </div>
+                                    </div>
+                                    <div class="bar-product-label">Users</div>
+                                </div>
+
+                                <div class="bar-group">
+                                    <div class="bar-wrap">
+                                        <div class="bar-item">
+                                            <span class="bar-value text-primary">@Model.TotalStockRecords</span>
+                                            <div class="bar bg-primary" style="height:@(sH)px; width:34px;"
+                                                 title="Stock Records: @Model.TotalStockRecords"></div>
+                                        </div>
+                                    </div>
+                                    <div class="bar-product-label">Stock Records</div>
+                                </div>
+
+                                <div class="bar-group">
+                                    <div class="bar-wrap">
+                                        <div class="bar-item">
+                                            <span class="bar-value text-success">@Model.TotalAvailableStock</span>
+                                            <div class="bar bg-success" style="height:@(aH)px; width:34px;"
+                                                 title="Available: @Model.TotalAvailableStock"></div>
+                                        </div>
+                                    </div>
+                                    <div class="bar-product-label">Available</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="chart-legend">
+                            <span><span class="legend-dot bg-info"></span>Users</span>
+                            <span><span class="legend-dot bg-primary"></span>Stocks</span>
+                            <span><span class="legend-dot bg-success"></span>Available</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="row g-4 mb-5">
+
+            <div class="col-md-6">
+                <div class="card border-0 shadow-sm rounded-3">
+                    <div class="card-body">
+                        <p class="section-title">📦 Available Stock Summary</p>
+                        <p class="section-sub">Current stock grouped by product name</p>
+                        <table class="table table-hover table-bordered mb-0 small">
+                            <thead class="table-success text-center">
+                                <tr>
+                                    <th>#</th>
+                                    <th>Product</th>
+                                    <th>Total In</th>
+                                    <th>Total Out</th>
+                                    <th>Available</th>
+                                </tr>
+                            </thead>
+                            <tbody class="text-center">
+                                @{
+                                    int j = 1;
+                                    if (Model.AvailableList.Count == 0)
+                                    {
+                                        <tr>
+                                            <td colspan="5" class="text-muted">No data found.</td>
+                                        </tr>
+                                    }
+                                    else
+                                    {
+                                        foreach (var item in Model.AvailableList)
+                                        {
+                                            <tr>
+                                                <td>@(j++)</td>
+                                                <td class="text-start fw-semibold">@item.P_Name</td>
+                                                <td class="text-primary fw-bold">@item.Quantity_In</td>
+                                                <td class="text-danger fw-bold">@item.Quantity_Out</td>
+                                                <td>
+                                                    <span class="badge @(item.Available_Stock > 0 ? "bg-success" : "bg-danger") px-3 py-2">
+                                                        @item.Available_Stock
+                                                    </span>
+                                                </td>
+                                            </tr>
+                                        }
+                                    }
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="card border-0 shadow-sm rounded-3">
+                    <div class="card-body">
+                        <p class="section-title">Recent Stock Entries</p>
+                        <p class="section-sub">Last 5 stock records added to the system</p>
+                        <table class="table table-hover table-bordered mb-0 small">
+                            <thead class="table-dark text-center">
+                                <tr>
+                                    <th>#</th>
+                                    <th>Product</th>
+                                    <th>Qty In</th>
+                                    <th>Qty Out</th>
+                                    <th>Date</th>
+                                </tr>
+                            </thead>
+                            <tbody class="text-center">
+                                @{
+                                    int k = 1;
+                                    if (Model.RecentStocks.Count == 0)
+                                    {
+                                        <tr>
+                                            <td colspan="5" class="text-muted">No records found.</td>
+                                        </tr>
+                                    }
+                                    else
+                                    {
+                                        foreach (var item in Model.RecentStocks)
+                                        {
+                                            <tr>
+                                                <td>@(k++)</td>
+                                                <td class="text-start fw-semibold">@item.P_Name</td>
+                                                <td class="text-primary fw-bold">@item.Quantity_In</td>
+                                                <td class="text-danger fw-bold">@item.Quantity_Out</td>
+                                                <td>
+                                                    <span class="badge bg-secondary">
+                                                        @item.EntryDate.ToLocalTime().ToString("dd MMM yyyy")
+                                                    </span>
+                                                </td>
+                                            </tr>
+                                        }
+                                    }
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

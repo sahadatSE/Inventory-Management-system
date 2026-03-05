@@ -15,17 +15,17 @@ namespace Business.Services
 
         public Result AddUser(User user)
         {
-            // Check duplicate username
+            
             bool exists = _context.User.Any(u => u.UserName == user.UserName);
             if (exists)
                 return new Result(false, "Username already exists");
 
-            // Check duplicate user number
+        
             bool numberExists = _context.User.Any(u => u.UserNumber == user.UserNumber);
             if (numberExists)
                 return new Result(false, "User number already exists");
 
-            // Hash password before saving
+        
             user.UserPassword = new PasswordHasher<object>().HashPassword(user, user.UserPassword!);
 
             _context.User.Add(user);
@@ -42,7 +42,7 @@ namespace Business.Services
             existing.UserNumber = user.UserNumber;
             existing.RoleId = user.RoleId;
 
-            // Only update password if a new one is provided
+         
             if (!string.IsNullOrWhiteSpace(user.UserPassword))
                 existing.UserPassword = new PasswordHasher<object>().HashPassword(user, user.UserPassword);
 
