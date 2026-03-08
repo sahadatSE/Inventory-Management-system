@@ -1,6 +1,7 @@
 using Business;
 using Business.Services;
 using Database.Model;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace WebApplication1.Pages.Admin
@@ -8,7 +9,6 @@ namespace WebApplication1.Pages.Admin
     public class StockListModel(StockService service) : PageModel
     {
         private readonly StockService _service = service;
-
         public List<Stock> List { get; set; } = new();
         public List<Stock> AvailableList { get; set; } = new();
 
@@ -21,6 +21,17 @@ namespace WebApplication1.Pages.Admin
             Result availableResult = _service.GetAvailableStocks();
             if (availableResult.Success)
                 AvailableList = availableResult.Data as List<Stock> ?? new();
+        }
+
+        public IActionResult OnPostDelete(int id)
+        {
+            Result result = _service.DeleteStock(id);
+            if (result.Success)
+                TempData["SuccessMessage"] = result.Message;
+            else
+                TempData["ErrorMessage"] = result.Message;
+
+            return RedirectToPage();
         }
     }
 }

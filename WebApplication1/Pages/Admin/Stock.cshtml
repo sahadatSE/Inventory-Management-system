@@ -36,10 +36,7 @@
                             @Html.AntiForgeryToken()
                             <input asp-for="Model.Stock_Id" type="hidden" />
 
-                            <div class="mb-3">
-                                <label class="form-label fw-bold">Product ID</label>
-                                <input asp-for="Model.P_Id" type="number" class="form-control" placeholder="Enter product ID" />
-                            </div>
+                      
 
                             <div class="mb-3">
                                 <label class="form-label fw-bold">Product Name</label>
@@ -56,6 +53,11 @@
                                 <label class="form-label fw-bold">Quantity Out</label>
                                 <input asp-for="Model.Quantity_Out" type="number" class="form-control" placeholder="Enter quantity out" />
                                 <span asp-validation-for="Model.Quantity_Out" class="text-danger small"></span>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Added By</label>
+                                <input asp-for="Model.UserName" type="text" class="form-control" placeholder="Enter name" />
+                                <span asp-validation-for="Model.UserName" class="text-danger small"></span>
                             </div>
 
                             <div class="mb-3">

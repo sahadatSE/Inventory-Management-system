@@ -26,16 +26,25 @@ namespace Business.Services
             return Result.DBcommit(_context, "Supplier deleted successfully");
         }
 
+        public Result DeleteSupplier(int id)
+        {
+            var supplier = _context.Suppliers.Find(id);
+            if (supplier == null)
+                return new Result(false, "Supplier not found");
+
+            _context.Suppliers.Remove(supplier);
+            return Result.DBcommit(_context, "Supplier deleted successfully");
+        }
+
         public Result GetAllSupplier()
         {
             var suppliers = _context.Suppliers.ToList();
             return new Result(true, "Suppliers retrieved successfully", suppliers);
         }
 
-        public Result GetSupplier(string id)
+        public Result GetSupplier(int id)
         {
             var supplier = _context.Suppliers.Find(id);
-
             if (supplier == null)
                 return new Result(false, "Supplier not found");
 
@@ -43,4 +52,3 @@ namespace Business.Services
         }
     }
 }
-

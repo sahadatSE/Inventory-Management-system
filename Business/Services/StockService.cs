@@ -63,5 +63,22 @@ namespace Business.Services
                 .ToList();
             return new Result(true, "Available stocks retrieved", available);
         }
+        public Result DeleteStock(int id)
+        {
+            try
+            {
+                var stock = _context.Stock.Find(id);
+                if (stock == null)
+                    return new Result { Success = false, Message = "Stock not found." };
+
+                _context.Stock.Remove(stock);
+                _context.SaveChanges();
+                return new Result { Success = true, Message = "Deleted successfully." };
+            }
+            catch (Exception ex)
+            {
+                return new Result { Success = false, Message = ex.Message };
+            }
+        }
     }
 }

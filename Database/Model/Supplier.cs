@@ -10,15 +10,19 @@ namespace Database.Model
     public class Supplier : BaseModel
     {
         [Key]
-        [StringLength(128)]
-        public string S_Id { get; set; } = new Guid().ToString();
+        [Required]
+        public int S_Id { get; set; } 
 
         [Required]
         [StringLength(50)]
         public string S_Name { get; set; } = string.Empty;
 
         [Required]
+        [StringLength(50)]
+        [EmailAddress]
+        public string S_Email { get; set; } = string.Empty;
 
+        [Required]
         public int  S_Number { get; set; }
 
         [Required]
