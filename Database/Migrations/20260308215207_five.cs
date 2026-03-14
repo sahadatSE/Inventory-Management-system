@@ -1,8 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore.Migrations;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
-
 #nullable disable
-
 namespace Database.Migrations
 {
     /// <inheritdoc />
@@ -11,17 +9,9 @@ namespace Database.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AlterColumn<int>(
-                name: "S_Id",
-                table: "Suppliers",
-                type: "integer",
-                maxLength: 128,
-                nullable: false,
-                oldClrType: typeof(string),
-                oldType: "character varying(128)",
-                oldMaxLength: 128)
-                .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
-
+            migrationBuilder.Sql(
+                "ALTER TABLE \"Suppliers\" ALTER COLUMN \"S_Id\" TYPE integer USING \"S_Id\"::integer;"
+            );
             migrationBuilder.AddColumn<string>(
                 name: "S_Email",
                 table: "Suppliers",
@@ -30,14 +20,12 @@ namespace Database.Migrations
                 nullable: false,
                 defaultValue: "");
         }
-
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropColumn(
                 name: "S_Email",
                 table: "Suppliers");
-
             migrationBuilder.AlterColumn<string>(
                 name: "S_Id",
                 table: "Suppliers",

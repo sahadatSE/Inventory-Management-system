@@ -38,4 +38,18 @@ app.MapStaticAssets();
 app.MapRazorPages()
    .WithStaticAssets();
 
-app.Run();
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<IMSContext>();
+    try
+    {
+        db.Database.CanConnect();
+        Console.WriteLine("? Database connected successfully!");
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"? Database connection failed: {ex.Message}");
+    }
+}
+
+        app.Run();
