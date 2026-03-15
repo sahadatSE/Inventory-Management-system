@@ -6,27 +6,46 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace WebApplication1.Pages.Admin
 {
-    public class ProductListModel(ProductService service) : PageModel
+    public class ProductModel(ProductService productService) : PageModel
     {
-        private readonly ProductService _service = service;
+        private readonly ProductService _productService = productService;
 
-        public List<Product> Products { get; set; } = [];
+        [BindProperty]
+        public Product ProductData { get; set; } = new();
 
-        public void OnGet()
+        [BindProperty]
+        public bool IsEdit { get; set; } = false;
+
+        public void OnGet(int? Id = null)
         {
-            Result result = _service.GetAllProduct();
-            Products = result.Data as List<Product> ?? [];
+            if (Id != null)
+            {
+                Result result = _productService.GetProduct(Id.Value);
+                ProductData = result.Data as Product ?? new Product();
+                IsEdit = true;
+            }
         }
 
-        public IActionResult OnPostDelete(int Id)
+        public IActionResult OnPost()
         {
-            Result result = _service.GetProduct(Id);
-            if (result.Success && result.Data is Product product)
+            ModelState.Clear();
+            Result result;
+
+            if (!IsEdit)
+                result = _productService.AddProduct(ProductData);
+            else
+                result = _productService.UpdateProduct(ProductData);
+
+            if (result.Success)
             {
-                _service.DeleteProduct(product);
-                TempData["Msg"] = "Product details deleted successfully.";
+                TempData["SuccessMessage"] = result.Message;
+                return RedirectToPage("/Admin/ProductList");
             }
-            return RedirectToPage();
+            else
+            {
+                ModelState.AddModelError("", result.Message);
+                return Page();
+            }
         }
     }
 }

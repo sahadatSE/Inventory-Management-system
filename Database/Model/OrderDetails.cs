@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Database.Model
@@ -11,34 +6,21 @@ namespace Database.Model
     public class OrderDetails : BaseModel
     {
         [Key]
-        public int  ODetailes_Id {  get; set; }
-
-        [ForeignKey("User")]
-        
-        public string UserID { get; set; } = string.Empty;
-
-        [ForeignKey("Product")]
-        public string P_Id { get; set; } = string.Empty;
-
-        [ForeignKey("Discount")]
-        public int DiscountId { get; set; }
-
-        [ForeignKey("Offer")]
-        public int OfferId { get; set; }
-
-        [ForeignKey("Product")]
-        public int P_Quantity { get; set; }
-
-        [ForeignKey("Product")]
-        public decimal P_Price { get; set; }
+        public int OrderDetailsId { get; set; }
 
         [ForeignKey("Order")]
-        public int O_Id { get; set; }
+        public int OrderId { get; set; }
+        public Order? Order { get; set; }
 
+        [ForeignKey("Product")]
+        public int PId { get; set; }
+        public Product? Product { get; set; }
 
+        [Required]
+        public int Quantity { get; set; }
 
+        public decimal UnitPrice { get; set; }
 
-
-
+        public decimal TotalPrice => Quantity * UnitPrice;
     }
 }

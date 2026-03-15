@@ -28,7 +28,7 @@ namespace WebApplication1.Pages.Admin
 
             Result result;
 
-            if (Model.S_Id == 0)
+            if (Model.SId == 0)
                 result = _service.AddSupplier(Model);
             else
                 result = _service.UpdateSupplier(Model);

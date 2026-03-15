@@ -30,39 +30,39 @@
 
         <div class="card shadow" style="max-width:480px; margin:0 auto;">
             <div class="card-header text-white" style="background-color:#0d6efd;">
-                <h5 class="mb-0">@(Model.Model.S_Id == 0 ? "Add Supplier" : "Edit Supplier")</h5>
+                <h5 class="mb-0">@(Model.Model.SId == 0 ? "Add Supplier" : "Edit Supplier")</h5>
             </div>
             <div class="card-body">
                 <form method="post">
-                    <input type="hidden" asp-for="Model.S_Id" />
+                    <input type="hidden" asp-for="Model.SId" />
 
                     <div class="mb-3">
                         <label class="form-label fw-bold">Supplier Name</label>
-                        <input asp-for="Model.S_Name" class="form-control" placeholder="Enter supplier name" />
-                        <span asp-validation-for="Model.S_Name" class="text-danger small"></span>
+                        <input asp-for="Model.SName" class="form-control" placeholder="Enter supplier name" />
+                        <span asp-validation-for="Model.SName" class="text-danger small"></span>
                     </div>
 
                     <div class="mb-3">
                         <label class="form-label fw-bold">Email</label>
-                        <input asp-for="Model.S_Email" type="email" class="form-control" placeholder="Enter email" />
-                        <span asp-validation-for="Model.S_Email" class="text-danger small"></span>
+                        <input asp-for="Model.SEmail" type="email" class="form-control" placeholder="Enter email" />
+                        <span asp-validation-for="Model.SEmail" class="text-danger small"></span>
                     </div>
 
                     <div class="mb-3">
                         <label class="form-label fw-bold">Phone Number</label>
-                        <input asp-for="Model.S_Number" class="form-control" placeholder="Enter phone number" />
-                        <span asp-validation-for="Model.S_Number" class="text-danger small"></span>
+                        <input asp-for="Model.SNumber" class="form-control" placeholder="Enter phone number" />
+                        <span asp-validation-for="Model.SNumber" class="text-danger small"></span>
                     </div>
 
                     <div class="mb-3">
                         <label class="form-label fw-bold">Address</label>
-                        <input asp-for="Model.S_Adress" class="form-control" placeholder="Enter address" />
-                        <span asp-validation-for="Model.S_Adress" class="text-danger small"></span>
+                        <input asp-for="Model.SAdress" class="form-control" placeholder="Enter address" />
+                        <span asp-validation-for="Model.SAdress" class="text-danger small"></span>
                     </div>
 
                     <div class="d-flex gap-2 mt-3">
                         <button type="submit" class="btn btn-primary w-100">
-                            @(Model.Model.S_Id == 0 ? "Save" : "Update")
+                            @(Model.Model.SId == 0 ? "Save" : "Update")
                         </button>
                         <a asp-page="/Admin/SupplierList" class="btn btn-secondary w-100">Back</a>
                     </div>

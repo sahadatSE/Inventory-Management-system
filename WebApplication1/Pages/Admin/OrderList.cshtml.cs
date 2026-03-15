@@ -14,18 +14,27 @@ namespace WebApplication1.Pages.Admin
 
         public void OnGet()
         {
-            Result result = _service.GetAllOrder();
+            Result result = _service.GetAllOrders();
             Orders = result.Data as List<Order> ?? [];
         }
 
         public IActionResult OnPostDelete(int Id)
         {
-            Result result = _service.GetOrder(Id);
-            if (result.Success && result.Data is Order order)
-            {
-                _service.DeleteOrder(order);
-                TempData["Msg"] = "Order deleted successfully.";
-            }
+            Result result = _service.DeleteOrder(Id);
+            if (result.Success)
+                TempData["SuccessMessage"] = result.Message;
+            else
+                TempData["ErrorMessage"] = result.Message;
+            return RedirectToPage();
+        }
+
+        public IActionResult OnPostUpdateStatus(int OrderId, string Status)
+        {
+            Result result = _service.UpdateStatus(OrderId, Status);
+            if (result.Success)
+                TempData["SuccessMessage"] = result.Message;
+            else
+                TempData["ErrorMessage"] = result.Message;
             return RedirectToPage();
         }
     }

@@ -1,4 +1,3 @@
-using System.Security.Claims;
 using Business;
 using Business.Services;
 using Database.Model;
@@ -7,33 +6,45 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace WebApplication1.Pages.Admin
 {
-    public class StockModel(StockService service) : PageModel
+    public class StockModel(StockService stockService, ProductService productService) : PageModel
     {
-        private readonly StockService _service = service;
+        private readonly StockService _stockService = stockService;
+        private readonly ProductService _productService = productService;
 
         [BindProperty]
-        public Stock Model { get; set; } = new();
+        public Stock StockData { get; set; } = new();
+
+        [BindProperty]
+        public bool IsEdit { get; set; } = false;
+
+        public List<Product> Products { get; set; } = [];
 
         public void OnGet(int? Id = null)
         {
+            Result productResult = _productService.GetAllProduct();
+            Products = productResult.Data as List<Product> ?? [];
+
             if (Id != null)
             {
-                Result result = _service.GetStock(Id.Value);
-                Model = result.Data as Stock ?? new Stock();
+                Result result = _stockService.GetStock(Id.Value);
+                StockData = result.Data as Stock ?? new Stock();
+                IsEdit = true;
             }
         }
 
         public IActionResult OnPost()
         {
             ModelState.Clear();
-            Model.Available_Stock = Model.Quantity_In - Model.Quantity_Out;
-            Model.UserName = User.FindFirst(ClaimTypes.Name)?.Value ?? string.Empty;
+
+            Result productResult = _productService.GetAllProduct();
+            Products = productResult.Data as List<Product> ?? [];
 
             Result result;
-            if (Model.Stock_Id == 0)
-                result = _service.AddStock(Model);
+
+            if (!IsEdit)
+                result = _stockService.AddStock(StockData);
             else
-                result = _service.UpdateStock(Model);
+                result = _stockService.UpdateStock(StockData);
 
             if (result.Success)
             {

@@ -9,27 +9,29 @@ namespace WebApplication1.Pages.Admin
     public class StockListModel(StockService service) : PageModel
     {
         private readonly StockService _service = service;
-        public List<Stock> List { get; set; } = new();
-        public List<Stock> AvailableList { get; set; } = new();
+
+        public List<Stock> Stocks { get; set; } = [];
+        public List<Stock> AvailableStocks { get; set; } = []; // Available summary
 
         public void OnGet()
         {
+            // ?? entry
             Result result = _service.GetAllStocks();
-            if (result.Success)
-                List = result.Data as List<Stock> ?? new();
+            Stocks = result.Data as List<Stock> ?? [];
 
-            Result availableResult = _service.GetAvailableStocks();
-            if (availableResult.Success)
-                AvailableList = availableResult.Data as List<Stock> ?? new();
+            // Product ???????? available stock
+            Result availResult = _service.GetAvailableStocks();
+            AvailableStocks = availResult.Data as List<Stock> ?? [];
         }
 
-        public IActionResult OnPostDelete(int id)
+        public IActionResult OnPostDelete(int Id)
         {
-            Result result = _service.DeleteStock(id);
-            if (result.Success)
-                TempData["SuccessMessage"] = result.Message;
+            Result deleteResult = _service.DeleteStock(Id);
+
+            if (deleteResult.Success)
+                TempData["SuccessMessage"] = deleteResult.Message;
             else
-                TempData["ErrorMessage"] = result.Message;
+                TempData["ErrorMessage"] = deleteResult.Message;
 
             return RedirectToPage();
         }

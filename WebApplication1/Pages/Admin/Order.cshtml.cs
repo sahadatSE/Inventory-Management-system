@@ -1,4 +1,3 @@
-using System.Security.Claims;
 using Business;
 using Business.Services;
 using Database.Model;
@@ -7,36 +6,64 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace WebApplication1.Pages.Admin
 {
-    public class OrderModel(OrderService service) : PageModel
+    public class SelectedProduct
     {
-        private readonly OrderService _service = service;
+        public int PId { get; set; }
+        public int Quantity { get; set; }
+    }
+
+    public class OrderPageModel(OrderService orderService, ProductService productService) : PageModel
+    {
+        private readonly OrderService _orderService = orderService;
+        private readonly ProductService _productService = productService;
 
         [BindProperty]
-        public Order Model { get; set; } = new();
+        public Order OrderData { get; set; } = new();
 
-        public void OnGet(int? Id = null)
+        [BindProperty]
+        public List<SelectedProduct> SelectedProducts { get; set; } = [];
+
+        public List<Product> Products { get; set; } = [];
+
+        public void OnGet()
         {
-            if (Id != null)
-            {
-                Result result = _service.GetOrder(Id.Value);
-                Model = result.Data as Order ?? new Order();
-            }
+            Result result = _orderService.GetAvailableProducts();
+            Products = result.Data as List<Product> ?? [];
         }
 
         public IActionResult OnPost()
         {
-            Model.CreatedBy = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            ModelState.Clear();
 
-            Result result;
-            if (Model.O_Id == 0)
-                result = _service.AddOrder(Model);
-            else
-                result = _service.UpdateOrder(Model);
+            Result productResult = _orderService.GetAvailableProducts();
+            Products = productResult.Data as List<Product> ?? [];
+
+            if (SelectedProducts.Count == 0)
+            {
+                ModelState.AddModelError("", "??????? ???? product select ????");
+                return Page();
+            }
+
+            // OrderDetails ????
+            var details = SelectedProducts.Select(sp => new OrderDetails
+            {
+                PId = sp.PId,
+                Quantity = sp.Quantity,
+                UnitPrice = 0 // Stock ???? price ???? ????? ??? ??? ????
+            }).ToList();
+
+            Result result = _orderService.AddOrder(OrderData, details);
 
             if (result.Success)
+            {
+                TempData["SuccessMessage"] = result.Message;
                 return RedirectToPage("/Admin/OrderList");
+            }
             else
+            {
+                ModelState.AddModelError("", result.Message);
                 return Page();
+            }
         }
     }
 }

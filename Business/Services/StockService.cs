@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Database.Context;
+﻿using Database.Context;
 using Database.Model;
+using Microsoft.EntityFrameworkCore;
 
 namespace Business.Services
 {
@@ -14,10 +10,27 @@ namespace Business.Services
 
         public Result AddStock(Stock stock)
         {
-            stock.Available_Stock = stock.Quantity_In - stock.Quantity_Out;
-            stock.EntryDate = DateTime.UtcNow; 
+            stock.EntryDate = DateTime.UtcNow;
             _context.Stock.Add(stock);
             return Result.DBcommit(_context, "Stock added successfully");
+        }
+
+        public Result UpdateStock(Stock stock)
+        {
+            var existing = _context.Stock.Find(stock.Stock_Id);
+            if (existing == null)
+                return new Result(false, "Stock not found");
+
+            existing.Quantity_In = stock.Quantity_In;
+            existing.Quantity_Out = stock.Quantity_Out;
+            existing.Price = stock.Price;
+            existing.Category = stock.Category;
+            existing.P_Id = stock.P_Id;
+            existing.UserName = stock.UserName;
+            existing.EntryDate = DateTime.UtcNow;
+
+            _context.Stock.Update(existing);
+            return Result.DBcommit(_context, "Stock updated successfully");
         }
 
         public Result DeleteStock(Stock stock)
@@ -26,23 +39,29 @@ namespace Business.Services
             return Result.DBcommit(_context, "Stock deleted successfully");
         }
 
-        public Result UpdateStock(Stock stock)
+        public Result DeleteStock(int id)
         {
-            stock.Available_Stock = stock.Quantity_In - stock.Quantity_Out;
-            stock.EntryDate = DateTime.UtcNow; 
-            _context.Stock.Update(stock);
-            return Result.DBcommit(_context, "Stock updated successfully");
+            var stock = _context.Stock.Find(id);
+            if (stock == null)
+                return new Result(false, "Stock not found");
+
+            _context.Stock.Remove(stock);
+            return Result.DBcommit(_context, "Stock deleted successfully");
         }
 
         public Result GetAllStocks()
         {
-            var stocks = _context.Stock.ToList();
+            var stocks = _context.Stock
+                .Include(s => s.Product)
+                .ToList();
             return new Result(true, "Stocks retrieved successfully", stocks);
         }
 
         public Result GetStock(int id)
         {
-            var stock = _context.Stock.Find(id);
+            var stock = _context.Stock
+                .Include(s => s.Product)
+                .FirstOrDefault(s => s.Stock_Id == id);
             if (stock == null)
                 return new Result(false, "Stock not found");
             return new Result(true, "Stock retrieved successfully", stock);
@@ -51,34 +70,19 @@ namespace Business.Services
         public Result GetAvailableStocks()
         {
             var available = _context.Stock
-                .GroupBy(s => s.P_Name.ToLower().Trim())
+                .Include(s => s.Product)
+                .Where(s => s.Product != null)
+                .GroupBy(s => s.P_Id)
                 .Select(g => new Stock
                 {
-                    P_Name = g.First().P_Name,
-                    P_Id = g.First().P_Id,
+                    P_Id = g.Key,
                     Quantity_In = g.Sum(s => s.Quantity_In),
                     Quantity_Out = g.Sum(s => s.Quantity_Out),
-                    Available_Stock = g.Sum(s => s.Quantity_In) - g.Sum(s => s.Quantity_Out)
+                    Category = g.First().Category, 
+                    Product = g.First().Product
                 })
                 .ToList();
             return new Result(true, "Available stocks retrieved", available);
-        }
-        public Result DeleteStock(int id)
-        {
-            try
-            {
-                var stock = _context.Stock.Find(id);
-                if (stock == null)
-                    return new Result { Success = false, Message = "Stock not found." };
-
-                _context.Stock.Remove(stock);
-                _context.SaveChanges();
-                return new Result { Success = true, Message = "Deleted successfully." };
-            }
-            catch (Exception ex)
-            {
-                return new Result { Success = false, Message = ex.Message };
-            }
         }
     }
 }

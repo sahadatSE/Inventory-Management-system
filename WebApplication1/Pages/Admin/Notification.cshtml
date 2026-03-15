@@ -72,6 +72,7 @@
             </div>
         </div>
 
+        <!-- Out of Stock -->
         <div class="notif-card card mb-4">
             <div class="card-header bg-danger text-white fw-bold rounded-top">
                 <i class="bi bi-x-circle-fill"></i>
@@ -95,7 +96,8 @@
                                     <i class="bi bi-box-seam"></i>
                                 </div>
                                 <div>
-                                    <p class="fw-bold mb-0">@item.P_Name</p>
+                                    <!-- P_Name → Product?.PName -->
+                                    <p class="fw-bold mb-0">@(item.Product?.PName ?? "-")</p>
                                     <small class="text-muted">
                                         Total In: <strong class="text-primary">@item.Quantity_In</strong> |
                                         Total Out: <strong class="text-danger">@item.Quantity_Out</strong>
@@ -115,6 +117,7 @@
             </div>
         </div>
 
+        <!-- Low Stock -->
         <div class="notif-card card mb-4">
             <div class="card-header bg-warning text-dark fw-bold rounded-top">
                 <i class="bi bi-exclamation-triangle-fill"></i>
@@ -138,7 +141,8 @@
                                     <i class="bi bi-box-seam"></i>
                                 </div>
                                 <div>
-                                    <p class="fw-bold mb-0">@item.P_Name</p>
+                                    <!-- PName → Product?.PName -->
+                                    <p class="fw-bold mb-0">@(item.Product?.PName ?? "-")</p>
                                     <small class="text-muted">
                                         Total In: <strong class="text-primary">@item.Quantity_In</strong> |
                                         Total Out: <strong class="text-danger">@item.Quantity_Out</strong> |
@@ -159,7 +163,6 @@
             </div>
         </div>
 
-      
         @if (Model.OutOfStockList.Count == 0 && Model.LowStockList.Count == 0)
         {
             <div class="text-center py-5">

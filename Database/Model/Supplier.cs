@@ -11,24 +11,24 @@ namespace Database.Model
     {
         [Key]
         [Required]
-        public int S_Id { get; set; } 
+        public int SId { get; set; } 
 
         [Required]
         [StringLength(50)]
-        public string S_Name { get; set; } = string.Empty;
+        public string SName { get; set; } = string.Empty;
 
         [Required]
         [StringLength(50)]
         [EmailAddress]
-        public string S_Email { get; set; } = string.Empty;
+        public string SEmail { get; set; } = string.Empty;
 
         [Required]
-        public int  S_Number { get; set; }
+        public int  SNumber { get; set; }
 
         [Required]
         [StringLength(100)]
 
-        public string S_Adress { get; set; }= string.Empty; 
+        public string SAdress { get; set; }= string.Empty; 
     }
 }
 

@@ -1,30 +1,32 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+
 namespace Database.Model
 {
     public class Product : BaseModel
     {
         [Key]
-        public int P_Id { get; set; }
+        public int PId { get; set; }
 
         [Required]
         [StringLength(100)]
-        public string P_Name { get; set; } = string.Empty;
+        public string PName { get; set; } = string.Empty;
 
         [Required]
         [Range(0, 10000)]
-        public int P_Quantity { get; set; }
+        public int PQuantity { get; set; }
 
-        [Range(1, 100000)]
-        public decimal P_Price { get; set; }
+        [Required]
+        [StringLength(50)]
+        public string Category { get; set; } = string.Empty;
 
-        [ForeignKey("Supplier")]
-        public string S_Id { get; set; }  = string.Empty;
+        [Range(0, 100000)]
+        public decimal PPrice { get; set; }
 
+       
+        public int SupplierId { get; set; }
+
+        [ForeignKey("SupplierId")]
+        public Supplier? Supplier { get; set; }
     }
 }

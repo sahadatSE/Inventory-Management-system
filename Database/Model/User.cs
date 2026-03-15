@@ -20,6 +20,11 @@ namespace Database.Model
         [Required]
         public int UserNumber { get; set; }
         [Required]
+        [EmailAddress]
+        [StringLength(150)]
+        public string Email { get; set; } = string.Empty;
+        [Required]
+
         public string? UserPassword { get; set; } = string.Empty;
 
         public int RoleId { get; set; }

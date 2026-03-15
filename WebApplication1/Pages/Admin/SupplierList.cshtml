@@ -134,15 +134,15 @@
                     {
                         <tr>
                             <td><span class="badge-id">@(i++)</span></td>
-                            <td class="fw-semibold">@s.S_Name</td>
-                            <td class="text-muted">@s.S_Email</td>
-                            <td>@s.S_Number</td>
-                            <td class="text-muted">@s.S_Adress</td>
+                            <td class="fw-semibold">@s.SName</td>
+                            <td class="text-muted">@s.SEmail</td>
+                            <td>@s.SNumber</td>
+                            <td class="text-muted">@s.SAdress</td>
                             <td>
-                                <a href="/Admin/Supplier?Id=@s.S_Id"
+                                <a href="/Admin/Supplier?Id=@s.SId"
                                    class="btn btn-sm btn-warning fw-semibold me-1">Edit</a>
                                 <form method="post" class="d-inline">
-                                    <input type="hidden" name="id" value="@s.S_Id" />
+                                    <input type="hidden" name="id" value="@s.SId" />
                                     <button type="submit" asp-page-handler="Delete"
                                             class="btn btn-sm btn-danger fw-semibold"
                                             onclick="return confirm('Delete this supplier?')">

@@ -16,7 +16,6 @@
             font-family: 'Segoe UI', sans-serif;
         }
 
-     
         .stat-card {
             border: none;
             border-radius: 12px;
@@ -39,7 +38,6 @@
             font-size: 1.6rem;
         }
 
-   
         .chart-wrapper {
             display: flex;
             align-items: flex-end;
@@ -105,7 +103,6 @@
             font-weight: 600;
         }
 
-  
         .y-axis {
             display: flex;
             flex-direction: column;
@@ -118,7 +115,6 @@
             min-width: 30px;
         }
 
-    
         .chart-legend {
             display: flex;
             gap: 20px;
@@ -136,7 +132,6 @@
             vertical-align: middle;
         }
 
-    
         .section-title {
             font-size: 1rem;
             font-weight: 700;
@@ -165,8 +160,8 @@
             </span>
         </div>
 
+        <!-- Stat Cards -->
         <div class="row g-4 mb-4">
-
             <div class="col-md-4">
                 <div class="stat-card bg-white">
                     <div class="d-flex justify-content-between align-items-center">
@@ -185,7 +180,6 @@
                     </a>
                 </div>
             </div>
-
             <div class="col-md-4">
                 <div class="stat-card bg-white">
                     <div class="d-flex justify-content-between align-items-center">
@@ -204,7 +198,6 @@
                     </a>
                 </div>
             </div>
-
             <div class="col-md-4">
                 <div class="stat-card bg-white">
                     <div class="d-flex justify-content-between align-items-center">
@@ -223,24 +216,20 @@
                     </a>
                 </div>
             </div>
-
         </div>
 
+        <!-- Charts -->
         <div class="row g-4 mb-4">
-
             <div class="col-md-8">
                 <div class="card border-0 shadow-sm rounded-3">
                     <div class="card-body">
                         <p class="section-title">Stock Overview by Product</p>
                         <p class="section-sub">Quantity In, Quantity Out and Available Stock per product</p>
-
                         @{
                             int maxVal = Model.AvailableList.Count > 0
                             ? Model.AvailableList.Max(s => s.Quantity_In) : 1;
                             if (maxVal == 0) maxVal = 1;
-                            int step = maxVal / 4 == 0 ? 1 : maxVal / 4;
                         }
-
                         <div class="d-flex gap-2">
                             <div class="y-axis">
                                 <span>@(maxVal)</span>
@@ -249,7 +238,6 @@
                                 <span>@(maxVal / 4)</span>
                                 <span>0</span>
                             </div>
-
                             <div class="chart-wrapper flex-grow-1">
                                 @foreach (var item in Model.AvailableList)
                                 {
@@ -275,12 +263,12 @@
                                                      title="Available: @item.Available_Stock"></div>
                                             </div>
                                         </div>
-                                        <div class="bar-product-label">@item.P_Name</div>
+                                        <!-- P_Name → Product?.PName -->
+                                        <div class="bar-product-label">@(item.Product?.PName ?? "-")</div>
                                     </div>
                                 }
                             </div>
                         </div>
-
                         <div class="chart-legend">
                             <span><span class="legend-dot bg-primary"></span>Quantity In</span>
                             <span><span class="legend-dot bg-danger"></span>Quantity Out</span>
@@ -295,7 +283,6 @@
                     <div class="card-body">
                         <p class="section-title">System Summary</p>
                         <p class="section-sub">Users, Stock Records & Available Stock</p>
-
                         @{
                             int maxSummary = Math.Max(
                             Math.Max(Model.TotalUsers, Model.TotalStockRecords),
@@ -305,7 +292,6 @@
                             int sH = (int)((double)Model.TotalStockRecords / maxSummary * 190);
                             int aH = (int)((double)Model.TotalAvailableStock / maxSummary * 190);
                         }
-
                         <div class="d-flex gap-2">
                             <div class="y-axis">
                                 <span>@maxSummary</span>
@@ -314,7 +300,6 @@
                                 <span>@(maxSummary / 4)</span>
                                 <span>0</span>
                             </div>
-
                             <div class="chart-wrapper flex-grow-1 justify-content-center">
                                 <div class="bar-group">
                                     <div class="bar-wrap">
@@ -326,7 +311,6 @@
                                     </div>
                                     <div class="bar-product-label">Users</div>
                                 </div>
-
                                 <div class="bar-group">
                                     <div class="bar-wrap">
                                         <div class="bar-item">
@@ -337,7 +321,6 @@
                                     </div>
                                     <div class="bar-product-label">Stock Records</div>
                                 </div>
-
                                 <div class="bar-group">
                                     <div class="bar-wrap">
                                         <div class="bar-item">
@@ -350,7 +333,6 @@
                                 </div>
                             </div>
                         </div>
-
                         <div class="chart-legend">
                             <span><span class="legend-dot bg-info"></span>Users</span>
                             <span><span class="legend-dot bg-primary"></span>Stocks</span>
@@ -359,16 +341,15 @@
                     </div>
                 </div>
             </div>
-
         </div>
 
+        <!-- Tables -->
         <div class="row g-4 mb-5">
-
             <div class="col-md-6">
                 <div class="card border-0 shadow-sm rounded-3">
                     <div class="card-body">
                         <p class="section-title">📦 Available Stock Summary</p>
-                        <p class="section-sub">Current stock grouped by product name</p>
+                        <p class="section-sub">Current stock grouped by product</p>
                         <table class="table table-hover table-bordered mb-0 small">
                             <thead class="table-success text-center">
                                 <tr>
@@ -380,30 +361,29 @@
                                 </tr>
                             </thead>
                             <tbody class="text-center">
-                                @{
+                                @if (Model.AvailableList.Count == 0)
+                                {
+                                    <tr>
+                                        <td colspan="5" class="text-muted">No data found.</td>
+                                    </tr>
+                                }
+                                else
+                                {
                                     int j = 1;
-                                    if (Model.AvailableList.Count == 0)
+                                    foreach (var item in Model.AvailableList)
                                     {
                                         <tr>
-                                            <td colspan="5" class="text-muted">No data found.</td>
+                                            <td>@(j++)</td>
+                                            <!-- P_Name → Product?.PName -->
+                                            <td class="text-start fw-semibold">@(item.Product?.PName ?? "-")</td>
+                                            <td class="text-primary fw-bold">@item.Quantity_In</td>
+                                            <td class="text-danger fw-bold">@item.Quantity_Out</td>
+                                            <td>
+                                                <span class="badge @(item.Available_Stock > 0 ? "bg-success" : "bg-danger") px-3 py-2">
+                                                    @item.Available_Stock
+                                                </span>
+                                            </td>
                                         </tr>
-                                    }
-                                    else
-                                    {
-                                        foreach (var item in Model.AvailableList)
-                                        {
-                                            <tr>
-                                                <td>@(j++)</td>
-                                                <td class="text-start fw-semibold">@item.P_Name</td>
-                                                <td class="text-primary fw-bold">@item.Quantity_In</td>
-                                                <td class="text-danger fw-bold">@item.Quantity_Out</td>
-                                                <td>
-                                                    <span class="badge @(item.Available_Stock > 0 ? "bg-success" : "bg-danger") px-3 py-2">
-                                                        @item.Available_Stock
-                                                    </span>
-                                                </td>
-                                            </tr>
-                                        }
                                     }
                                 }
                             </tbody>
@@ -428,30 +408,29 @@
                                 </tr>
                             </thead>
                             <tbody class="text-center">
-                                @{
+                                @if (Model.RecentStocks.Count == 0)
+                                {
+                                    <tr>
+                                        <td colspan="5" class="text-muted">No records found.</td>
+                                    </tr>
+                                }
+                                else
+                                {
                                     int k = 1;
-                                    if (Model.RecentStocks.Count == 0)
+                                    foreach (var item in Model.RecentStocks)
                                     {
                                         <tr>
-                                            <td colspan="5" class="text-muted">No records found.</td>
+                                            <td>@(k++)</td>
+                                            <!-- P_Name → Product?.PName -->
+                                            <td class="text-start fw-semibold">@(item.Product?.PName ?? "-")</td>
+                                            <td class="text-primary fw-bold">@item.Quantity_In</td>
+                                            <td class="text-danger fw-bold">@item.Quantity_Out</td>
+                                            <td>
+                                                <span class="badge bg-secondary">
+                                                    @item.EntryDate.ToLocalTime().ToString("dd MMM yyyy")
+                                                </span>
+                                            </td>
                                         </tr>
-                                    }
-                                    else
-                                    {
-                                        foreach (var item in Model.RecentStocks)
-                                        {
-                                            <tr>
-                                                <td>@(k++)</td>
-                                                <td class="text-start fw-semibold">@item.P_Name</td>
-                                                <td class="text-primary fw-bold">@item.Quantity_In</td>
-                                                <td class="text-danger fw-bold">@item.Quantity_Out</td>
-                                                <td>
-                                                    <span class="badge bg-secondary">
-                                                        @item.EntryDate.ToLocalTime().ToString("dd MMM yyyy")
-                                                    </span>
-                                                </td>
-                                            </tr>
-                                        }
                                     }
                                 }
                             </tbody>
@@ -459,7 +438,6 @@
                     </div>
                 </div>
             </div>
-
         </div>
 
     </div>

@@ -20,7 +20,7 @@ namespace WebApplication1.Pages.Admin
             if (!string.IsNullOrWhiteSpace(search))
             {
                 SearchQuery = search;
-                List = all.Where(s => s.S_Name.Contains(search, StringComparison.OrdinalIgnoreCase)).ToList();
+                List = all.Where(s => s.SName.Contains(search, StringComparison.OrdinalIgnoreCase)).ToList();
             }
             else
             {

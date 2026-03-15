@@ -1,4 +1,3 @@
-using System.Security.Claims;
 using Business;
 using Business.Services;
 using Database.Model;
@@ -7,36 +6,46 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace WebApplication1.Pages.Admin
 {
-    public class ProductModel(ProductService service) : PageModel
+    public class ProductListModel(ProductService productService, StockService stockService) : PageModel
     {
-        private readonly ProductService _service = service;
+        private readonly ProductService _productService = productService;
+        private readonly StockService _stockService = stockService;
 
-        [BindProperty]
-        public Product Model { get; set; } = new();
+        public List<Product> Products { get; set; } = [];
+        public Dictionary<int, int> StockSummary { get; set; } = [];
 
-        public void OnGet(int? Id = null)
+        public void OnGet()
         {
-            if (Id != null)
-            {
-                Result result = _service.GetProduct(Id.Value);
-                Model = result.Data as Product ?? new Product();
-            }
+            Result result = _productService.GetAllProduct();
+            Products = result.Data as List<Product> ?? [];
+
+            Result stockResult = _stockService.GetAvailableStocks();
+            var stocks = stockResult.Data as List<Stock> ?? [];
+
+            StockSummary = stocks.ToDictionary(
+                s => s.P_Id,
+                s => s.Quantity_In - s.Quantity_Out
+            );
         }
 
-        public IActionResult OnPost()
+        public IActionResult OnPostDelete(int Id)
         {
-            Model.CreatedBy = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            Result getResult = _productService.GetProduct(Id);
+            if (!getResult.Success)
+            {
+                TempData["ErrorMessage"] = getResult.Message;
+                return RedirectToPage();
+            }
 
-            Result result;
-            if (Model.P_Id == 0)
-                result = _service.AddProduct(Model);
-            else
-                result = _service.UpdateProduct(Model);
+            Product product = getResult.Data as Product ?? new Product();
+            Result deleteResult = _productService.DeleteProduct(product);
 
-            if (result.Success)
-                return RedirectToPage("/Admin/ProductList");
+            if (deleteResult.Success)
+                TempData["SuccessMessage"] = deleteResult.Message;
             else
-                return Page();
+                TempData["ErrorMessage"] = deleteResult.Message;
+
+            return RedirectToPage();
         }
     }
 }
