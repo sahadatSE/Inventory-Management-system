@@ -10,6 +10,7 @@ namespace WebApplication1.Pages.Admin
     {
         public int PId { get; set; }
         public int Quantity { get; set; }
+        public decimal UnitPrice { get; set; }
     }
 
     public class OrderPageModel(OrderService orderService, ProductService productService) : PageModel
@@ -38,18 +39,21 @@ namespace WebApplication1.Pages.Admin
             Result productResult = _orderService.GetAvailableProducts();
             Products = productResult.Data as List<Product> ?? [];
 
-            if (SelectedProducts.Count == 0)
+            var selected = SelectedProducts
+                .Where(sp => sp.PId > 0 && sp.Quantity > 0)
+                .ToList();
+
+            if (selected.Count == 0)
             {
-                ModelState.AddModelError("", "??????? ???? product select ????");
+                ModelState.AddModelError("", "Please select at least one product");
                 return Page();
             }
 
-            // OrderDetails ????
-            var details = SelectedProducts.Select(sp => new OrderDetails
+            var details = selected.Select(sp => new OrderDetails
             {
                 PId = sp.PId,
                 Quantity = sp.Quantity,
-                UnitPrice = 0 // Stock ???? price ???? ????? ??? ??? ????
+                UnitPrice = sp.UnitPrice
             }).ToList();
 
             Result result = _orderService.AddOrder(OrderData, details);

@@ -1,4 +1,4 @@
-﻿@page
+﻿@page "/Admin/Order"
 @model WebApplication1.Pages.Admin.OrderPageModel
 @{
     ViewData["Title"] = "Place Order";
@@ -17,14 +17,14 @@
             border: 2px solid #dee2e6;
             border-radius: 10px;
             padding: 15px;
+            background: #fff;
             cursor: pointer;
             transition: all 0.2s;
-            background: #fff;
         }
 
             .product-card:hover {
                 border-color: #0d6efd;
-                box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+                box-shadow: 0 4px 12px rgba(0,0,0,0.08);
             }
 
             .product-card.selected {
@@ -32,22 +32,10 @@
                 background: #f0f7ff;
             }
 
-        .stock-badge {
-            padding: 4px 10px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 600;
-        }
-
-        .qty-input {
-            width: 70px;
-            text-align: center;
-        }
-
-        .order-summary {
-            position: sticky;
-            top: 20px;
-        }
+            .product-card.stockout {
+                opacity: 0.5;
+                cursor: not-allowed;
+            }
     </style>
 </head>
 <body>
@@ -72,81 +60,48 @@
 
         <form method="post" id="orderForm">
             @Html.AntiForgeryToken()
+            <div id="hiddenInputs"></div>
 
             <div class="row g-4">
 
-                <!-- Left: Products -->
+                <!-- Left: Product Cards -->
                 <div class="col-md-8">
-
-                    <!-- Customer Info -->
-                    <div class="card shadow-sm mb-4">
-                        <div class="card-header bg-primary text-white fw-bold">
-                            👤 Customer Information
-                        </div>
-                        <div class="card-body">
-                            <div class="row g-3">
-                                <div class="col-md-6">
-                                    <label class="form-label fw-bold">Customer Name</label>
-                                    <input asp-for="OrderData.CustomerName" class="form-control" placeholder="Enter name" />
-                                </div>
-                                <div class="col-md-6">
-                                    <label class="form-label fw-bold">Phone</label>
-                                    <input asp-for="OrderData.CustomerPhone" class="form-control" placeholder="01XXXXXXXXX" />
-                                </div>
-                                <div class="col-md-6">
-                                    <label class="form-label fw-bold">Email</label>
-                                    <input asp-for="OrderData.CustomerEmail" type="email" class="form-control" placeholder="Enter email" />
-                                </div>
-                                <div class="col-md-6">
-                                    <label class="form-label fw-bold">Address</label>
-                                    <input asp-for="OrderData.CustomerAddress" class="form-control" placeholder="Enter address" />
-                                </div>
-                                <div class="col-12">
-                                    <label class="form-label fw-bold">Description / Note</label>
-                                    <textarea asp-for="OrderData.Description" class="form-control" rows="2"
-                                              placeholder="Any special instructions..."></textarea>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Products -->
                     <div class="card shadow-sm">
-                        <div class="card-header bg-success text-white fw-bold">
+                        <div class="card-header bg-primary text-white fw-bold">
                             📦 Select Products
                         </div>
                         <div class="card-body">
                             <input type="text" id="productSearch" class="form-control mb-3"
                                    placeholder="Search product..." />
-                            <div class="row g-3" id="productList">
+                            <div class="row g-3">
                                 @foreach (var product in Model.Products)
                                 {
                                     int available = product.PQuantity;
-                                    string statusColor = available == 0 ? "danger" : available <= 2 ? "warning" : "success";
-                                    string statusText = available == 0 ? "Stock Out" : "Available";
+                                    bool isStockOut = available == 0;
+                                    string priceStr = product.PPrice.ToString("F2").Replace(",", ".");
 
                                     <div class="col-md-6 product-item"
                                          data-name="@product.PName.ToLower()">
-                                        <div class="product-card" onclick="toggleProduct(@product.PId, this)">
-                                            <div class="d-flex justify-content-between align-items-start">
+                                        <div class="product-card @(isStockOut ? "stockout" : "")"
+                                             id="card_@product.PId"
+                                             onclick="@(isStockOut ? "" : $"toggleProduct({product.PId}, {priceStr}, '{product.PName}', {available}, this)")">
+                                            <div class="d-flex justify-content-between align-items-start mb-2">
                                                 <div>
-                                                    <p class="fw-bold mb-1">@product.PName</p>
+                                                    <p class="fw-bold mb-0">@product.PName</p>
                                                     <small class="text-muted">@product.Category</small>
                                                 </div>
-                                                <span class="stock-badge bg-@(statusColor) bg-opacity-10 text-@statusColor">
-                                                    @statusText
-                                                </span>
+                                                @if (isStockOut)
+                                                {
+                                                    <span class="badge bg-danger">Stock Out</span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="badge bg-success">Available</span>
+                                                }
                                             </div>
-                                            <div class="d-flex justify-content-between align-items-center mt-2">
-                                                <small class="text-muted">Available: <strong>@available</strong></small>
-                                            </div>
-                                            <!-- Hidden quantity input -->
-                                            <div class="mt-2 qty-section" style="display:none;" onclick="event.stopPropagation()">
-                                                <label class="form-label small fw-bold">Quantity:</label>
-                                                <input type="number" class="form-control qty-input"
-                                                       min="1" max="@available" value="1"
-                                                       id="qty_@product.PId"
-                                                       onchange="updateSummary()" />
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <small class="text-muted">Stock: <strong>@available</strong></small>
+                                                <span class="text-success fw-bold">$@product.PPrice.ToString("F2")</span>
                                             </div>
                                         </div>
                                     </div>
@@ -154,32 +109,38 @@
                             </div>
                         </div>
                     </div>
-
                 </div>
 
-                <!-- Right: Order Summary -->
+                <!-- Right: Selected Table -->
                 <div class="col-md-4">
-                    <div class="card shadow-sm order-summary">
+                    <div class="card shadow-sm">
                         <div class="card-header bg-warning text-dark fw-bold">
                             🧾 Order Summary
                         </div>
-                        <div class="card-body">
-                            <div id="summaryItems">
-                                <p class="text-muted text-center small">কোনো product select করা হয়নি</p>
-                            </div>
-                            <hr />
-                            <div class="d-flex justify-content-between fw-bold">
-                                <span>Total Items:</span>
-                                <span id="totalItems">0</span>
-                            </div>
-                            <div class="d-flex justify-content-between fw-bold mt-1">
-                                <span>Total Qty:</span>
-                                <span id="totalQty">0</span>
-                            </div>
+                        <div class="card-body p-0">
+                            <table class="table table-sm mb-0" id="selectedTable">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th class="ps-3">Product</th>
+                                        <th>Qty</th>
+                                        <th>Total</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody id="selectedBody">
+                                    <tr id="emptyRow">
+                                        <td colspan="4" class="text-center text-muted py-3 small">
+                                            No product selected
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
                         </div>
                         <div class="card-footer">
-                            <!-- Hidden selected products -->
-                            <div id="hiddenInputs"></div>
+                            <div class="d-flex justify-content-between fw-bold text-success mb-3">
+                                <span>Total Price:</span>
+                                <span id="totalPrice">$0.00</span>
+                            </div>
                             <button type="submit" class="btn btn-primary w-100 fw-bold">
                                 ✅ Place Order
                             </button>
@@ -189,63 +150,95 @@
 
             </div>
         </form>
-
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         let selectedProducts = {};
 
-        function toggleProduct(pid, card) {
-            const qtySection = card.querySelector('.qty-section');
+        function toggleProduct(pid, price, name, maxQty, card) {
             if (selectedProducts[pid]) {
-                delete selectedProducts[pid];
-                card.classList.remove('selected');
-                qtySection.style.display = 'none';
+                removeProduct(pid);
             } else {
-                selectedProducts[pid] = 1;
+                selectedProducts[pid] = { price: price, name: name, qty: 1, maxQty: maxQty };
                 card.classList.add('selected');
-                qtySection.style.display = 'block';
+                addToTable(pid);
             }
-            updateSummary();
+            updateTotal();
         }
 
-        function updateSummary() {
-            const summaryDiv = document.getElementById('summaryItems');
+        function addToTable(pid) {
+            const item = selectedProducts[pid];
+            const tbody = document.getElementById('selectedBody');
+            document.getElementById('emptyRow').style.display = 'none';
+
+            const tr = document.createElement('tr');
+            tr.id = 'row_' + pid;
+            tr.innerHTML = `
+                <td class="ps-3 small fw-bold">${item.name}</td>
+                <td>
+                    <input type="number" class="form-control form-control-sm"
+                           style="width:60px;"
+                           value="1" min="1" max="${item.maxQty}"
+                           onchange="updateQty(${pid}, this.value)" />
+                </td>
+                <td class="text-success fw-bold" id="total_${pid}">
+                    $${(item.price * 1).toFixed(2)}
+                </td>
+                <td>
+                    <button type="button" class="btn btn-sm btn-outline-danger"
+                            onclick="removeProduct(${pid})">✕</button>
+                </td>`;
+            tbody.appendChild(tr);
+            updateHidden();
+        }
+
+        function updateQty(pid, qty) {
+            qty = parseInt(qty) || 1;
+            selectedProducts[pid].qty = qty;
+            const price = selectedProducts[pid].price;
+            document.getElementById('total_' + pid).innerText = '$' + (price * qty).toFixed(2);
+            updateTotal();
+            updateHidden();
+        }
+
+        function removeProduct(pid) {
+            delete selectedProducts[pid];
+            const row = document.getElementById('row_' + pid);
+            if (row) row.remove();
+
+            const card = document.getElementById('card_' + pid);
+            if (card) card.classList.remove('selected');
+
+            if (Object.keys(selectedProducts).length === 0) {
+                document.getElementById('emptyRow').style.display = '';
+            }
+            updateTotal();
+            updateHidden();
+        }
+
+        function updateTotal() {
+            let total = 0;
+            for (const pid in selectedProducts) {
+                total += selectedProducts[pid].price * selectedProducts[pid].qty;
+            }
+            document.getElementById('totalPrice').innerText = '$' + total.toFixed(2);
+        }
+
+        function updateHidden() {
             const hiddenInputs = document.getElementById('hiddenInputs');
             hiddenInputs.innerHTML = '';
-
-            let totalItems = 0;
-            let totalQty = 0;
-            let html = '';
-
+            let i = 0;
             for (const pid in selectedProducts) {
-                const qtyInput = document.getElementById('qty_' + pid);
-                const qty = qtyInput ? parseInt(qtyInput.value) || 1 : 1;
-                selectedProducts[pid] = qty;
-
-                const cardName = document.querySelector(`[onclick="toggleProduct(${pid}, this)"] .fw-bold`);
-                const name = cardName ? cardName.innerText : 'Product';
-
-                html += `<div class="d-flex justify-content-between small mb-1">
-                    <span>${name}</span>
-                    <span class="fw-bold">x${qty}</span>
-                </div>`;
-
+                const item = selectedProducts[pid];
                 hiddenInputs.innerHTML += `
-                    <input type="hidden" name="SelectedProducts[${totalItems}].PId" value="${pid}" />
-                    <input type="hidden" name="SelectedProducts[${totalItems}].Quantity" value="${qty}" />`;
-
-                totalItems++;
-                totalQty += qty;
+                    <input type="hidden" name="SelectedProducts[${i}].PId" value="${pid}" />
+                    <input type="hidden" name="SelectedProducts[${i}].Quantity" value="${item.qty}" />
+                    <input type="hidden" name="SelectedProducts[${i}].UnitPrice" value="${item.price}" />`;
+                i++;
             }
-
-            summaryDiv.innerHTML = totalItems > 0 ? html : '<p class="text-muted text-center small">কোনো product select করা হয়নি</p>';
-            document.getElementById('totalItems').innerText = totalItems;
-            document.getElementById('totalQty').innerText = totalQty;
         }
 
-        // Search
         document.getElementById('productSearch').addEventListener('input', function () {
             const search = this.value.toLowerCase();
             document.querySelectorAll('.product-item').forEach(item => {

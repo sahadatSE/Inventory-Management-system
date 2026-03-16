@@ -1,1 +1,178 @@
-﻿
+﻿@page
+@model WebApplication1.Pages.Admin.OrderDetailsListModel
+@{
+    ViewData["Title"] = "Order Details List";
+}
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>@ViewData["Title"]</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+
+        .table th {
+            font-weight: 600;
+            color: #555;
+            border-bottom: 2px solid #dee2e6;
+        }
+
+        .table td {
+            vertical-align: middle;
+            color: #333;
+        }
+
+        .btn-delete {
+            color: #dc3545;
+            background: none;
+            border: none;
+            font-weight: 500;
+        }
+
+            .btn-delete:hover {
+                text-decoration: underline;
+            }
+
+        .search-input {
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            padding: 10px 16px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-5">
+
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h4 class="fw-bold mb-0">📋 Order Details List</h4>
+            <a href="/Admin/OrderList" class="btn btn-outline-secondary btn-sm">← Back to Orders</a>
+        </div>
+
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <div class="alert alert-success alert-dismissible fade show">
+                @TempData["SuccessMessage"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        }
+        @if (TempData["ErrorMessage"] != null)
+        {
+            <div class="alert alert-danger alert-dismissible fade show">
+                @TempData["ErrorMessage"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        }
+
+        <div class="d-flex gap-3 mb-4">
+            <input type="text" id="searchInput" class="form-control search-input"
+                   placeholder="Search by product or order ID..." />
+        </div>
+
+        <div class="bg-white rounded shadow-sm">
+            <table class="table mb-0" id="detailsTable">
+                <thead>
+                    <tr>
+                        <th class="ps-4">#</th>
+                        <th>Order ID</th>
+                        <th>Product</th>
+                        <th>Category</th>
+                        <th>Unit Price</th>
+                        <th>Quantity</th>
+                        <th>Total Price</th>
+                        <th>Order Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model.Details.Count == 0)
+                    {
+                        <tr>
+                            <td colspan="9" class="text-center text-muted py-5">কোনো Order Details পাওয়া যায়নি</td>
+                        </tr>
+                    }
+                    else
+                    {
+                        int i = 1;
+                        foreach (var detail in Model.Details)
+                        {
+                            string statusColor = detail.Order?.OrderStatus switch
+                            {
+                                "Confirmed" => "success",
+                                "Cancelled" => "danger",
+                                _ => "warning"
+                            };
+                            <tr>
+                                <td class="ps-4">@(i++)</td>
+                                <td>
+                                    <a href="/Admin/OrderDetails?OrderId=@detail.OrderId"
+                                       class="text-primary fw-bold text-decoration-none">
+                                        #@detail.OrderId
+                                    </a>
+                                </td>
+                                <td>@(detail.Product?.PName ?? "-")</td>
+                                <td>@(detail.Product?.Category ?? "-")</td>
+                                <td>$@detail.UnitPrice.ToString("F2")</td>
+                                <td>@detail.Quantity</td>
+                                <td class="fw-bold text-success">$@detail.TotalPrice.ToString("F2")</td>
+                                <td>
+                                    <span class="badge bg-@statusColor">
+                                        @(detail.Order?.OrderStatus ?? "-")
+                                    </span>
+                                </td>
+                                <td>
+                                    <button class="btn-delete"
+                                            onclick="confirmDelete('@detail.OrderDetailsId', '@(detail.Product?.PName ?? "-")')">
+                                        Delete
+                                    </button>
+                                </td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+
+    <!-- Delete Modal -->
+    <div class="modal fade" id="deleteModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header border-0">
+                    <h5 class="modal-title fw-bold">Delete Order Detail</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <strong id="deleteDetailName"></strong> delete করতে চান?
+                </div>
+                <div class="modal-footer border-0">
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
+                    <form method="post" asp-page-handler="Delete">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="Id" id="deleteDetailId" />
+                        <button type="submit" class="btn btn-danger">Delete</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.getElementById('searchInput').addEventListener('input', function () {
+            const search = this.value.toLowerCase();
+            document.querySelectorAll('#detailsTable tbody tr').forEach(row => {
+                row.style.display = row.innerText.toLowerCase().includes(search) ? '' : 'none';
+            });
+        });
+
+        function confirmDelete(id, name) {
+            document.getElementById('deleteDetailId').value = id;
+            document.getElementById('deleteDetailName').innerText = name;
+            new bootstrap.Modal(document.getElementById('deleteModal')).show();
+        }
+    </script>
+</body>
+</html>

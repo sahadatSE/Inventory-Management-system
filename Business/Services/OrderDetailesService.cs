@@ -1,47 +1,83 @@
-﻿using System.Linq;
-using Database.Context;
+﻿using Database.Context;
 using Database.Model;
+using Microsoft.EntityFrameworkCore;
 
 namespace Business.Services
 {
-    public class OrderDetailesService(IMSContext context)
+    public class OrderDetailsService(IMSContext context)
     {
         private readonly IMSContext _context = context;
 
-        public Result AddOrderDetails(OrderDetails orderDetails)
+        public Result AddOrderDetails(OrderDetails details)
         {
-            _context.OrderDetails.Add(orderDetails);
-            return Result.DBcommit(_context, "OrderDetails added successfully");
+            _context.OrderDetails.Add(details);
+            return Result.DBcommit(_context, "Order details added successfully");
         }
 
-        public Result UpdateOrderDetails(OrderDetails orderDetails)
+        public Result UpdateOrderDetails(OrderDetails details)
         {
-            _context.OrderDetails.Update(orderDetails);
-            return Result.DBcommit(_context, "OrderDetails updated successfully");
+            var existing = _context.OrderDetails.Find(details.OrderDetailsId);
+            if (existing == null)
+                return new Result(false, "Order details not found");
+
+            existing.PId = details.PId;
+            existing.Quantity = details.Quantity;
+            existing.UnitPrice = details.UnitPrice;
+
+            _context.OrderDetails.Update(existing);
+            return Result.DBcommit(_context, "Order details updated successfully");
         }
 
-        public Result DeleteOrderDetails(OrderDetails orderDetails)
+        public Result DeleteOrderDetails(int id)
         {
-            _context.OrderDetails.Remove(orderDetails);
-            return Result.DBcommit(_context, "OrderDetails deleted successfully");
+            var details = _context.OrderDetails.Find(id);
+            if (details == null)
+                return new Result(false, "Order details not found");
+
+            _context.OrderDetails.Remove(details);
+            return Result.DBcommit(_context, "Order details deleted successfully");
         }
 
         public Result GetAllOrderDetails()
         {
-            var orderDetails = _context.OrderDetails.ToList();
-            return new Result(true, "OrderDetails retrieved successfully", orderDetails);
+            var details = _context.OrderDetails
+                .Include(d => d.Product)
+                .Include(d => d.Order)
+                .ToList();
+            return new Result(true, "Order details retrieved successfully", details);
         }
 
-       
-        public Result GetOrderDetails(int O_Id)
+        public Result GetOrderDetails(int id)
         {
-            var orderDetails = _context.OrderDetails.Find(O_Id);
+            var details = _context.OrderDetails
+                .Include(d => d.Product)
+                .Include(d => d.Order)
+                .FirstOrDefault(d => d.OrderDetailsId == id);
 
-            if (orderDetails == null)
-                return new Result(false, "OrderDetails not found");
+            if (details == null)
+                return new Result(false, "Order details not found");
 
-            return new Result(true, "OrderDetails retrieved successfully", orderDetails);
+            return new Result(true, "Order details retrieved successfully", details);
+        }
+
+        public Result GetByOrderId(int orderId)
+        {
+            var details = _context.OrderDetails
+                .Include(d => d.Product)
+                .Where(d => d.OrderId == orderId)
+                .ToList();
+
+            return new Result(true, "Order details retrieved successfully", details);
+        }
+
+        public Result GetByProductId(int productId)
+        {
+            var details = _context.OrderDetails
+                .Include(d => d.Order)
+                .Where(d => d.PId == productId)
+                .ToList();
+
+            return new Result(true, "Order details retrieved successfully", details);
         }
     }
 }
-

@@ -1,4 +1,4 @@
-﻿@page
+﻿@page "/Admin/Product"
 @model WebApplication1.Pages.Admin.ProductModel
 @{
     ViewData["Title"] = Model.IsEdit ? "Edit Product" : "Add Product";
@@ -39,14 +39,26 @@
 
                             <div class="mb-3">
                                 <label class="form-label fw-bold">Product Name</label>
-                                <input asp-for="ProductData.PName" class="form-control" placeholder="Enter product name" />
+                                <input asp-for="ProductData.PName" class="form-control"
+                                       placeholder="Enter product name" />
                                 <span asp-validation-for="ProductData.PName" class="text-danger small"></span>
                             </div>
 
                             <div class="mb-3">
                                 <label class="form-label fw-bold">Category</label>
-                                <input asp-for="ProductData.Category" class="form-control" placeholder="Enter category" />
+                                <input asp-for="ProductData.Category" class="form-control"
+                                       placeholder="Enter category" />
                                 <span asp-validation-for="ProductData.Category" class="text-danger small"></span>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Price</label>
+                                <div class="input-group">
+                                    <span class="input-group-text">$</span>
+                                    <input asp-for="ProductData.PPrice" type="number" step="0.01"
+                                           class="form-control" placeholder="0.00" />
+                                </div>
+                                <span asp-validation-for="ProductData.PPrice" class="text-danger small"></span>
                             </div>
 
                             <button type="submit" class="btn btn-primary w-100">

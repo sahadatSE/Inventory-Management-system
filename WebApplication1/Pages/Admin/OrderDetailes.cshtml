@@ -1,1 +1,194 @@
-﻿
+﻿@page
+@model WebApplication1.Pages.Admin.OrderDetailsPageModel
+@{
+    ViewData["Title"] = "Order Details";
+}
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>@ViewData["Title"]</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+
+        .table th {
+            font-weight: 600;
+            color: #555;
+            border-bottom: 2px solid #dee2e6;
+        }
+
+        .table td {
+            vertical-align: middle;
+            color: #333;
+        }
+
+        .btn-delete {
+            color: #dc3545;
+            background: none;
+            border: none;
+            font-weight: 500;
+        }
+
+            .btn-delete:hover {
+                text-decoration: underline;
+            }
+
+        .info-card {
+            border-radius: 12px;
+            border: none;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-5">
+
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h4 class="fw-bold mb-0">📋 Order Details</h4>
+            <a href="/Admin/OrderList" class="btn btn-outline-secondary btn-sm">← Back to Orders</a>
+        </div>
+
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <div class="alert alert-success alert-dismissible fade show">
+                @TempData["SuccessMessage"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        }
+        @if (TempData["ErrorMessage"] != null)
+        {
+            <div class="alert alert-danger alert-dismissible fade show">
+                @TempData["ErrorMessage"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        }
+
+        @if (Model.OrderData != null)
+        {
+            <!-- Order Info -->
+            <div class="card info-card mb-4">
+                <div class="card-header bg-primary text-white fw-bold">
+                    🧾 Order Information
+                </div>
+                <div class="card-body">
+                    <table class="table table-borderless mb-0 small">
+                        <tr>
+                            <td class="fw-bold text-muted" style="width:30%">Order ID</td>
+                            <td class="fw-bold">#@Model.OrderData.OrderId</td>
+                        </tr>
+                        <tr>
+                            <td class="fw-bold text-muted">Order Date</td>
+                            <td>@Model.OrderData.OrderDate.ToLocalTime().ToString("dd MMM yyyy hh:mm tt")</td>
+                        </tr>
+                        <tr>
+                            <td class="fw-bold text-muted">Status</td>
+                            <td>
+                                @{
+                                    string statusColor = Model.OrderData.OrderStatus switch
+                                    {
+                                        "Confirmed" => "success",
+                                        "Cancelled" => "danger",
+                                        _ => "warning"
+                                    };
+                                }
+                                <span class="badge bg-@statusColor">@Model.OrderData.OrderStatus</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="fw-bold text-muted">Total Amount</td>
+                            <td class="fw-bold text-success fs-5">$@Model.OrderData.TotalAmount.ToString("F2")</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Products Table -->
+            <div class="card info-card mb-4">
+                <div class="card-header bg-warning text-dark fw-bold">
+                    📦 Ordered Products
+                </div>
+                <div class="card-body p-0">
+                    <table class="table mb-0">
+                        <thead>
+                            <tr>
+                                <th class="ps-4">#</th>
+                                <th>Product</th>
+                                <th>Category</th>
+                                <th>Unit Price</th>
+                                <th>Quantity</th>
+                                <th>Total Price</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (Model.Details.Count == 0)
+                            {
+                                <tr>
+                                    <td colspan="7" class="text-center text-muted py-4">কোনো Product নেই</td>
+                                </tr>
+                            }
+                            else
+                            {
+                                int i = 1;
+                                foreach (var detail in Model.Details)
+                                {
+                                    <tr>
+                                        <td class="ps-4">@(i++)</td>
+                                        <td>@(detail.Product?.PName ?? "-")</td>
+                                        <td>@(detail.Product?.Category ?? "-")</td>
+                                        <td>$@detail.UnitPrice.ToString("F2")</td>
+                                        <td>@detail.Quantity</td>
+                                        <td class="fw-bold text-success">$@detail.TotalPrice.ToString("F2")</td>
+                                        <td>
+                                            <button class="btn-delete"
+                                                    onclick="confirmDelete('@detail.OrderDetailsId', '@(detail.Product?.PName ?? "-")')">
+                                                Delete
+                                            </button>
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        }
+
+    </div>
+
+    <!-- Delete Modal -->
+    <div class="modal fade" id="deleteModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header border-0">
+                    <h5 class="modal-title fw-bold">Delete Order Detail</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <strong id="deleteDetailName"></strong> delete করতে চান?
+                </div>
+                <div class="modal-footer border-0">
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
+                    <form method="post" asp-page-handler="Delete">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="Id" id="deleteDetailId" />
+                        <input type="hidden" name="OrderId" value="@Model.OrderData?.OrderId" />
+                        <button type="submit" class="btn btn-danger">Delete</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function confirmDelete(id, name) {
+            document.getElementById('deleteDetailId').value = id;
+            document.getElementById('deleteDetailName').innerText = name;
+            new bootstrap.Modal(document.getElementById('deleteModal')).show();
+        }
+    </script>
+</body>
+</html>

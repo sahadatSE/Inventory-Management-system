@@ -9,9 +9,12 @@ namespace Business.Services
 
         public Result AddProduct(Product product)
         {
-            bool exists = _context.Product.Any(p => p.PName == product.PName);
+            bool exists = _context.Product.Any(p =>
+                p.PName == product.PName &&
+                p.Category == product.Category);
+
             if (exists)
-                return new Result(false, "Product already exists");
+                return new Result(false, "Product already exists in this category");
 
             _context.Product.Add(product);
             return Result.DBcommit(_context, "Product added successfully");
@@ -23,12 +26,17 @@ namespace Business.Services
             if (existing == null)
                 return new Result(false, "Product not found");
 
-            bool exists = _context.Product.Any(p => p.PName == product.PName && p.PId != product.PId);
+            bool exists = _context.Product.Any(p =>
+                p.PName == product.PName &&
+                p.Category == product.Category &&
+                p.PId != product.PId);
+
             if (exists)
-                return new Result(false, "Product name already exists");
+                return new Result(false, "Product already exists in this category");
 
             existing.PName = product.PName;
             existing.Category = product.Category;
+            existing.PPrice = product.PPrice;
 
             _context.Product.Update(existing);
             return Result.DBcommit(_context, "Product updated successfully");

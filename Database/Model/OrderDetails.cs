@@ -21,6 +21,7 @@ namespace Database.Model
 
         public decimal UnitPrice { get; set; }
 
+        [NotMapped]
         public decimal TotalPrice => Quantity * UnitPrice;
     }
 }

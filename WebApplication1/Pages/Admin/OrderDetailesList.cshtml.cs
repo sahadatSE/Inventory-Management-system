@@ -6,26 +6,27 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace WebApplication1.Pages.Admin
 {
-    public class OrderDetailesListModel(OrderDetailesService service) : PageModel
+    public class OrderDetailsListModel(OrderDetailsService service) : PageModel
     {
-        private readonly OrderDetailesService _service = service;
+        private readonly OrderDetailsService _service = service;
 
-        public List<OrderDetails> OrderDetails { get; set; } = [];
+        public List<OrderDetails> Details { get; set; } = [];
 
         public void OnGet()
         {
             Result result = _service.GetAllOrderDetails();
-            OrderDetails = result.Data as List<OrderDetails> ?? [];
+            Details = result.Data as List<OrderDetails> ?? [];
         }
 
-        public IActionResult OnPostDelete(int ODetailes_Id)
+        public IActionResult OnPostDelete(int Id)
         {
-            Result result = _service.GetOrderDetails(ODetailes_Id);
-            if (result.Success && result.Data is OrderDetails orderDetails)
-            {
-                _service.DeleteOrderDetails(orderDetails);
-                TempData["Msg"] = "Order details deleted successfully.";
-            }
+            Result result = _service.DeleteOrderDetails(Id);
+
+            if (result.Success)
+                TempData["SuccessMessage"] = result.Message;
+            else
+                TempData["ErrorMessage"] = result.Message;
+
             return RedirectToPage();
         }
     }
