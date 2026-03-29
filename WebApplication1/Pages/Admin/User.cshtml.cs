@@ -17,7 +17,7 @@ namespace WebApplication1.Pages.Admin
         {
             if (!string.IsNullOrEmpty(Id))
             {
-                Result result = _service.GetUser(int.Parse(Id));
+                Result result = _service.GetUser(Id);
                 Model = result.Data as User ?? new User();
             }
         }
@@ -26,30 +26,36 @@ namespace WebApplication1.Pages.Admin
         {
             ModelState.Clear();
 
-            Result result;
-
            
-            bool isNew = string.IsNullOrEmpty(Model.UserId)
-                         || Model.UserId == "00000000-0000-0000-0000-000000000000";
+            Result allUsers = _service.GetAllUser();
+            List<User> users = allUsers.Data as List<User> ?? new List<User>();
 
-            if (isNew)
+            bool nameExists = users.Any(u => u.UserName == Model.UserName);
+            if (nameExists)
             {
-                Model.UserId = Guid.NewGuid().ToString(); 
-                result = _service.AddUser(Model);
-            }
-            else
-            {
-                result = _service.UpdateUser(Model);
+                ModelState.AddModelError("", "Username already exists!");
+                return Page();
             }
 
-            if (result.Success)
+
+            bool emailExists = users.Any(u => u.Email == Model.Email);
+            if (emailExists)
             {
-                TempData["SuccessMessage"] = result.Message;
+                ModelState.AddModelError("", "Email already exists!");
+                return Page();
+            }
+
+            Model.UserId = Guid.NewGuid().ToString();
+            Result result2 = _service.AddUser(Model);
+
+            if (result2.Success)
+            {
+                TempData["SuccessMessage"] = result2.Message;
                 return RedirectToPage("/Admin/UserList");
             }
             else
             {
-                ModelState.AddModelError("", result.Message);
+                ModelState.AddModelError("", result2.Message);
                 return Page();
             }
         }

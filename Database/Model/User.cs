@@ -10,8 +10,8 @@ namespace Database.Model
     public class User : BaseModel
     {
         [Key]
-        [StringLength(128)]
-        public string UserId { get; set; } = new Guid().ToString(); 
+        
+        public string UserId { get; set; } = Guid.NewGuid().ToString(); 
 
         [Required]
         [StringLength(100)]

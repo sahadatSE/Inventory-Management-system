@@ -6,7 +6,8 @@ namespace Database.Model
     public class Stock : BaseModel
     {
         [Key]
-        public int Stock_Id { get; set; }
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public int Stock_Id { get; set; } 
 
         [Required]
         public int Quantity_In { get; set; }

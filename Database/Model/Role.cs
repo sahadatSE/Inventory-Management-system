@@ -11,7 +11,8 @@ namespace Database.Model
     [PrimaryKey(nameof(RoleId))]
     public class Role : BaseModel
     {
-        public int RoleId { get; set; }
+        [Key]
+        public int RoleId { get; set; } 
         [StringLength(50)]
         public string RoleName { get; set; } = string.Empty;
         

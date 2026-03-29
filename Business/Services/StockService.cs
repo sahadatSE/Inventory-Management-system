@@ -72,13 +72,13 @@ namespace Business.Services
             var available = _context.Stock
                 .Include(s => s.Product)
                 .Where(s => s.Product != null)
-                .GroupBy(s => s.P_Id)
+                .GroupBy(s => new { s.P_Id, s.Category }) 
                 .Select(g => new Stock
                 {
-                    P_Id = g.Key,
+                    P_Id = g.Key.P_Id,
                     Quantity_In = g.Sum(s => s.Quantity_In),
                     Quantity_Out = g.Sum(s => s.Quantity_Out),
-                    Category = g.First().Category, 
+                    Category = g.Key.Category,         
                     Product = g.First().Product
                 })
                 .ToList();

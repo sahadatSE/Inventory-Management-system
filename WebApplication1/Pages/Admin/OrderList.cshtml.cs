@@ -18,7 +18,7 @@ namespace WebApplication1.Pages.Admin
             Orders = result.Data as List<Order> ?? [];
         }
 
-        public IActionResult OnPostDelete(int Id)
+        public IActionResult OnPostDelete(string Id)
         {
             Result result = _service.DeleteOrder(Id);
             if (result.Success)
@@ -28,7 +28,7 @@ namespace WebApplication1.Pages.Admin
             return RedirectToPage();
         }
 
-        public IActionResult OnPostUpdateStatus(int OrderId, string Status)
+        public IActionResult OnPostUpdateStatus(string OrderId, string Status)
         {
             Result result = _service.UpdateStatus(OrderId, Status);
             if (result.Success)

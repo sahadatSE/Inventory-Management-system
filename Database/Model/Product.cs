@@ -6,7 +6,8 @@ namespace Database.Model
     public class Product : BaseModel
     {
         [Key]
-        public int PId { get; set; }
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public int PId { get; set; } 
 
         [Required]
         [StringLength(100)]
@@ -24,9 +25,6 @@ namespace Database.Model
         public decimal PPrice { get; set; }
 
        
-        public int SupplierId { get; set; }
-
-        [ForeignKey("SupplierId")]
-        public Supplier? Supplier { get; set; }
+        
     }
 }

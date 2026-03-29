@@ -62,7 +62,7 @@ namespace Business.Services
             return new Result(true, "Users retrieved successfully", users);
         }
 
-        public Result GetUser(int id)
+        public Result GetUser(string id)
         {
             var user = _context.User.Find(id);
             if (user == null)

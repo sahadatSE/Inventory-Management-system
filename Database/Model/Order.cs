@@ -5,7 +5,7 @@ namespace Database.Model
     public class Order : BaseModel
     {
         [Key]
-        public int OrderId { get; set; }
+        public string OrderId { get; set; } = Guid.NewGuid().ToString();
 
         public DateTime OrderDate { get; set; } = DateTime.UtcNow;
 

@@ -70,7 +70,7 @@ namespace Business.Services
             return Result.DBcommit(_context, "Order updated successfully");
         }
 
-        public Result DeleteOrder(int id)
+        public Result DeleteOrder(string id)
         {
             var order = _context.Order
                 .Include(o => o.OrderDetails)
@@ -94,7 +94,7 @@ namespace Business.Services
             return new Result(true, "Orders retrieved successfully", orders);
         }
 
-        public Result GetOrder(int id)
+        public Result GetOrder(string id)
         {
             var order = _context.Order
                 .Include(o => o.OrderDetails)
@@ -107,7 +107,7 @@ namespace Business.Services
             return new Result(true, "Order retrieved successfully", order);
         }
 
-        public Result UpdateStatus(int orderId, string status)
+        public Result UpdateStatus(string orderId, string status)
         {
             var order = _context.Order.Find(orderId);
             if (order == null)

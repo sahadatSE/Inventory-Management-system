@@ -18,38 +18,35 @@ builder.Services.AddScoped<StockService>();
 builder.Services.AddScoped<SupplierService>();
 builder.Services.AddScoped<UserService>();
 
+//for seassion
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromMinutes(30);
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
+});
+
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+// for Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+    
     app.UseHsts();
 }
 
 app.UseHttpsRedirection();
 
 app.UseRouting();
+// Enables session middleware to store user login info (UserId, UserName, RoleId) across requests
+app.UseSession();
 
-app.UseAuthorization(); // middleware
-
+app.UseAuthorization();
 app.MapStaticAssets();
 app.MapRazorPages()
    .WithStaticAssets();
 
-using (var scope = app.Services.CreateScope())
-{
-    var db = scope.ServiceProvider.GetRequiredService<IMSContext>();
-    try
-    {
-        db.Database.CanConnect();
-        Console.WriteLine("? Database connected successfully!");
-    }
-    catch (Exception ex)
-    {
-        Console.WriteLine($"? Database connection failed: {ex.Message}");
-    }
-}
+
 
         app.Run();

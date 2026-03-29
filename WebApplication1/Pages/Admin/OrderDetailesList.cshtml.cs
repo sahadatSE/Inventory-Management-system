@@ -18,7 +18,7 @@ namespace WebApplication1.Pages.Admin
             Details = result.Data as List<OrderDetails> ?? [];
         }
 
-        public IActionResult OnPostDelete(int Id)
+        public IActionResult OnPostDelete(string Id)
         {
             Result result = _service.DeleteOrderDetails(Id);
 

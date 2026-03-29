@@ -3,6 +3,7 @@ using System;
 using Database.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Database.Migrations
 {
     [DbContext(typeof(IMSContext))]
-    partial class IMSContextModelSnapshot : ModelSnapshot
+    [Migration("20260329154858_MigrationName")]
+    partial class MigrationName
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -107,8 +110,11 @@ namespace Database.Migrations
 
             modelBuilder.Entity("Database.Model.Order", b =>
                 {
-                    b.Property<string>("OrderId")
-                        .HasColumnType("text");
+                    b.Property<int>("OrderId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("OrderId"));
 
                     b.Property<string>("CreatedBy")
                         .HasMaxLength(128)
@@ -155,9 +161,8 @@ namespace Database.Migrations
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<string>("OrderId")
-                        .IsRequired()
-                        .HasColumnType("text");
+                    b.Property<int>("OrderId")
+                        .HasColumnType("integer");
 
                     b.Property<int>("PId")
                         .HasColumnType("integer");
@@ -215,6 +220,9 @@ namespace Database.Migrations
                     b.Property<int>("PQuantity")
                         .HasColumnType("integer");
 
+                    b.Property<int>("SupplierId")
+                        .HasColumnType("integer");
+
                     b.Property<string>("UpdatedBy")
                         .HasMaxLength(128)
                         .HasColumnType("character varying(128)");
@@ -223,6 +231,8 @@ namespace Database.Migrations
                         .HasColumnType("timestamp with time zone");
 
                     b.HasKey("PId");
+
+                    b.HasIndex("SupplierId");
 
                     b.ToTable("Product");
                 });
@@ -360,7 +370,8 @@ namespace Database.Migrations
             modelBuilder.Entity("Database.Model.User", b =>
                 {
                     b.Property<string>("UserId")
-                        .HasColumnType("text");
+                        .HasMaxLength(128)
+                        .HasColumnType("character varying(128)");
 
                     b.Property<string>("CreatedBy")
                         .HasMaxLength(128)
@@ -446,6 +457,17 @@ namespace Database.Migrations
                     b.Navigation("Order");
 
                     b.Navigation("Product");
+                });
+
+            modelBuilder.Entity("Database.Model.Product", b =>
+                {
+                    b.HasOne("Database.Model.Supplier", "Supplier")
+                        .WithMany()
+                        .HasForeignKey("SupplierId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Supplier");
                 });
 
             modelBuilder.Entity("Database.Model.Stock", b =>

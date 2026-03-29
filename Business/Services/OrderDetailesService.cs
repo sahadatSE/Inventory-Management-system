@@ -28,7 +28,7 @@ namespace Business.Services
             return Result.DBcommit(_context, "Order details updated successfully");
         }
 
-        public Result DeleteOrderDetails(int id)
+        public Result DeleteOrderDetails(string id)
         {
             var details = _context.OrderDetails.Find(id);
             if (details == null)
@@ -60,7 +60,7 @@ namespace Business.Services
             return new Result(true, "Order details retrieved successfully", details);
         }
 
-        public Result GetByOrderId(int orderId)
+        public Result GetByOrderId(string orderId)
         {
             var details = _context.OrderDetails
                 .Include(d => d.Product)

@@ -6,132 +6,689 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"]</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet" />
+
     <style>
+        :root {
+            --blue-50: #eff6ff;
+            --blue-100: #dbeafe;
+            --blue-200: #bfdbfe;
+            --blue-300: #93c5fd;
+            --blue-400: #60a5fa;
+            --blue-500: #3b82f6;
+            --blue-600: #2563eb;
+            --blue-700: #1d4ed8;
+            --blue-800: #1e40af;
+            --blue-900: #1e3a8a;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
         body {
-            background-color: #f8f9fa;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: linear-gradient(135deg, #e0eaff 0%, #f0f5ff 50%, #e8f0fe 100%);
+            min-height: 100vh;
+            color: #1e3a8a;
         }
 
-        .table th {
+            body::before {
+                content: '';
+                position: fixed;
+                left: 0;
+                top: 0;
+                width: 5px;
+                height: 100%;
+                background: linear-gradient(180deg, var(--blue-500), var(--blue-800));
+                z-index: 999;
+            }
+
+        .top-header {
+            background: linear-gradient(135deg, var(--blue-800) 0%, var(--blue-600) 100%);
+            padding: 18px 32px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 4px 24px rgba(30, 64, 175, 0.35);
+            border-radius: 14px;
+            margin-bottom: 24px;
+        }
+
+            .top-header .brand {
+                display: flex;
+                align-items: center;
+                gap: 12px;
+            }
+
+        .brand-icon {
+            width: 42px;
+            height: 42px;
+            background: rgba(255,255,255,0.18);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            backdrop-filter: blur(6px);
+        }
+
+        .brand-title {
+            color: #fff;
+            font-weight: 800;
+            font-size: 1.15rem;
+            letter-spacing: -0.3px;
+            margin: 0;
+        }
+
+        .brand-sub {
+            color: var(--blue-200);
+            font-size: 0.72rem;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+        }
+
+        .back-btn {
+            background: rgba(255,255,255,0.15);
+            color: #fff;
+            border: 1.5px solid rgba(255,255,255,0.3);
+            border-radius: 8px;
+            padding: 8px 18px;
+            font-size: 0.82rem;
             font-weight: 600;
-            color: #555;
-            border-bottom: 2px solid #dee2e6;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s;
+            backdrop-filter: blur(6px);
         }
 
-        .table td {
-            vertical-align: middle;
-            color: #333;
+            .back-btn:hover {
+                background: rgba(255,255,255,0.28);
+                color: #fff;
+                transform: translateX(-2px);
+            }
+
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            margin-bottom: 24px;
         }
 
-        .btn-delete {
-            color: #dc3545;
-            background: none;
-            border: none;
+        .stat-card {
+            background: #fff;
+            border-radius: 14px;
+            padding: 20px 22px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            box-shadow: 0 2px 16px rgba(30, 64, 175, 0.08);
+            border: 1px solid var(--blue-100);
+        }
+
+        .stat-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            flex-shrink: 0;
+        }
+
+            .stat-icon.blue {
+                background: var(--blue-100);
+                color: var(--blue-600);
+            }
+
+            .stat-icon.indigo {
+                background: #e0e7ff;
+                color: #4338ca;
+            }
+
+            .stat-icon.sky {
+                background: #e0f2fe;
+                color: #0284c7;
+            }
+
+        .stat-label {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .stat-value {
+            font-size: 1.55rem;
+            font-weight: 800;
+            color: var(--blue-800);
+            line-height: 1;
+            margin-top: 3px;
+        }
+
+        .search-wrap {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--blue-400);
+            font-size: 16px;
+            pointer-events: none;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 13px 18px 13px 44px;
+            border-radius: 12px;
+            border: 2px solid var(--blue-200);
+            background: #fff;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: 0.9rem;
+            color: var(--blue-900);
+            transition: all 0.2s;
+            box-shadow: 0 2px 10px rgba(30,64,175,0.06);
+        }
+
+            .search-input:focus {
+                outline: none;
+                border-color: var(--blue-500);
+                box-shadow: 0 0 0 4px rgba(59,130,246,0.12), 0 2px 10px rgba(30,64,175,0.08);
+            }
+
+            .search-input::placeholder {
+                color: #94a3b8;
+            }
+
+        .table-card {
+            background: #fff;
+            border-radius: 18px;
+            box-shadow: 0 4px 30px rgba(30, 64, 175, 0.10);
+            border: 1px solid var(--blue-100);
+            overflow: hidden;
+        }
+
+        .table-card-header {
+            background: linear-gradient(135deg, var(--blue-700), var(--blue-500));
+            padding: 16px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+            .table-card-header h6 {
+                color: #fff;
+                font-weight: 700;
+                font-size: 0.95rem;
+                margin: 0;
+                display: flex;
+                align-items: center;
+                gap: 8px;
+            }
+
+        .table-count-badge {
+            background: rgba(255,255,255,0.2);
+            color: #fff;
+            font-size: 0.75rem;
+            font-weight: 700;
+            padding: 3px 10px;
+            border-radius: 20px;
+            backdrop-filter: blur(4px);
+        }
+
+        .table {
+            margin: 0;
+        }
+
+            .table thead tr {
+                background: var(--blue-50);
+            }
+
+            .table thead th {
+                font-weight: 700;
+                font-size: 0.72rem;
+                text-transform: uppercase;
+                letter-spacing: 0.7px;
+                color: var(--blue-700);
+                border-bottom: 2px solid var(--blue-100);
+                padding: 14px 16px;
+                white-space: nowrap;
+            }
+
+            .table tbody tr {
+                border-bottom: 1px solid #f1f5f9;
+                transition: background 0.15s;
+            }
+
+                .table tbody tr:hover {
+                    background: var(--blue-50);
+                }
+
+                .table tbody tr:last-child {
+                    border-bottom: none;
+                }
+
+            .table tbody td {
+                padding: 14px 16px;
+                font-size: 0.875rem;
+                color: #334155;
+                vertical-align: middle;
+            }
+
+        .row-num {
+            width: 28px;
+            height: 28px;
+            background: var(--blue-100);
+            color: var(--blue-700);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.75rem;
+        }
+
+        .order-id-link {
+            background: var(--blue-100);
+            color: var(--blue-700);
+            padding: 4px 10px;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 0.82rem;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            transition: all 0.2s;
+        }
+
+            .order-id-link:hover {
+                background: var(--blue-600);
+                color: #fff;
+                transform: translateY(-1px);
+            }
+
+        .product-name {
+            font-weight: 600;
+            color: var(--blue-900);
+        }
+
+        .category-pill {
+            background: #e0f2fe;
+            color: #0369a1;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .price-cell {
+            color: #475569;
             font-weight: 500;
         }
 
+        .total-cell {
+            color: var(--blue-700);
+            font-weight: 700;
+            font-size: 0.92rem;
+        }
+
+        .qty-badge {
+            background: var(--blue-50);
+            border: 1.5px solid var(--blue-200);
+            color: var(--blue-700);
+            padding: 3px 10px;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 0.8rem;
+            display: inline-block;
+        }
+
+        .status-badge {
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 0.3px;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .status-confirmed {
+            background: #dcfce7;
+            color: #15803d;
+        }
+
+        .status-cancelled {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+
+        .status-pending {
+            background: var(--blue-100);
+            color: var(--blue-700);
+        }
+
+        .btn-delete {
+            background: #fff0f0;
+            color: #dc2626;
+            border: 1.5px solid #fecaca;
+            border-radius: 8px;
+            padding: 5px 12px;
+            font-size: 0.78rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            transition: all 0.2s;
+        }
+
             .btn-delete:hover {
-                text-decoration: underline;
+                background: #dc2626;
+                color: #fff;
+                border-color: #dc2626;
+                transform: translateY(-1px);
+                box-shadow: 0 4px 12px rgba(220,38,38,0.25);
             }
 
-        .search-input {
-            border-radius: 8px;
-            border: 1px solid #ddd;
-            padding: 10px 16px;
+        .empty-state {
+            padding: 60px 20px;
+            text-align: center;
+        }
+
+        .empty-icon {
+            width: 72px;
+            height: 72px;
+            background: var(--blue-50);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            margin: 0 auto 16px;
+            color: var(--blue-300);
+        }
+
+        .alert-success {
+            background: #f0fdf4;
+            border-left: 4px solid #22c55e;
+            border-top: none;
+            border-right: none;
+            border-bottom: none;
+            color: #166534;
+            border-radius: 10px;
+            padding: 14px 18px;
+        }
+
+        .alert-danger {
+            background: #fef2f2;
+            border-left: 4px solid #ef4444;
+            border-top: none;
+            border-right: none;
+            border-bottom: none;
+            color: #991b1b;
+            border-radius: 10px;
+            padding: 14px 18px;
+        }
+
+        .modal-content {
+            border: none;
+            border-radius: 18px;
+            box-shadow: 0 25px 60px rgba(30,64,175,0.2);
+            overflow: hidden;
+        }
+
+        .modal-header {
+            background: linear-gradient(135deg, var(--blue-800), var(--blue-600));
+            padding: 20px 24px;
+            border: none;
+        }
+
+            .modal-header .modal-title {
+                color: #fff;
+                font-weight: 700;
+                font-size: 1rem;
+                display: flex;
+                align-items: center;
+                gap: 8px;
+            }
+
+            .modal-header .btn-close {
+                filter: invert(1);
+                opacity: 0.7;
+            }
+
+        .modal-body {
+            padding: 24px;
+            font-size: 0.92rem;
+            color: #334155;
+        }
+
+        .modal-footer {
+            padding: 16px 24px;
+            border-top: 1px solid var(--blue-100);
+            background: var(--blue-50);
+        }
+
+        .btn-cancel {
+            background: #fff;
+            color: #64748b;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 9px;
+            padding: 9px 20px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            transition: all 0.2s;
+        }
+
+            .btn-cancel:hover {
+                background: #f1f5f9;
+            }
+
+        .btn-confirm-delete {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            color: #fff;
+            border: none;
+            border-radius: 9px;
+            padding: 9px 22px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            box-shadow: 0 4px 14px rgba(220,38,38,0.3);
+            transition: all 0.2s;
+        }
+
+            .btn-confirm-delete:hover {
+                transform: translateY(-1px);
+                box-shadow: 0 6px 18px rgba(220,38,38,0.4);
+            }
+
+        @@keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(18px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--blue-50);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--blue-300);
+            border-radius: 10px;
         }
     </style>
 </head>
 <body>
-    <div class="container mt-5">
 
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <h4 class="fw-bold mb-0">📋 Order Details List</h4>
-            <a href="/Admin/OrderList" class="btn btn-outline-secondary btn-sm">← Back to Orders</a>
+    <div class="container-fluid px-4 py-4" style="max-width:1300px; margin:0 auto;">
+
+        <!-- GAP FROM NAV VAR -->
+        <div class="top-header mt-3">
+            <div class="brand">
+                <div class="brand-icon">📋</div>
+                <div>
+                    <div class="brand-title">Order Details</div>
+                    <div class="brand-sub">ADMIN PANEL</div>
+                </div>
+            </div>
+            <a href="/Admin/OrderList" class="back-btn">
+                <i class="bi bi-arrow-left"></i> Back to Orders
+            </a>
         </div>
 
         @if (TempData["SuccessMessage"] != null)
         {
-            <div class="alert alert-success alert-dismissible fade show">
+            <div class="alert alert-success alert-dismissible fade show d-flex align-items-center gap-2 mb-3">
+                <i class="bi bi-check-circle-fill"></i>
                 @TempData["SuccessMessage"]
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                <button type="button" class="btn-close ms-auto" data-bs-dismiss="alert"></button>
             </div>
         }
         @if (TempData["ErrorMessage"] != null)
         {
-            <div class="alert alert-danger alert-dismissible fade show">
+            <div class="alert alert-danger alert-dismissible fade show d-flex align-items-center gap-2 mb-3">
+                <i class="bi bi-exclamation-circle-fill"></i>
                 @TempData["ErrorMessage"]
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                <button type="button" class="btn-close ms-auto" data-bs-dismiss="alert"></button>
             </div>
         }
 
-        <div class="d-flex gap-3 mb-4">
-            <input type="text" id="searchInput" class="form-control search-input"
-                   placeholder="Search by product or order ID..." />
+        <div class="stats-row">
+            <div class="stat-card">
+                <div class="stat-icon blue"><i class="bi bi-list-ol"></i></div>
+                <div>
+                    <div class="stat-label">Total Records</div>
+                    <div class="stat-value">@Model.Details.Count</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon sky"><i class="bi bi-bag-check"></i></div>
+                <div>
+                    <div class="stat-label">Total Quantity</div>
+                    <div class="stat-value">@Model.Details.Sum(d => d.Quantity)</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon indigo"><i class="bi bi-currency-dollar"></i></div>
+                <div>
+                    <div class="stat-label">Total Revenue</div>
+                    <div class="stat-value">$@Model.Details.Sum(d => d.TotalPrice).ToString("F0")</div>
+                </div>
+            </div>
         </div>
 
-        <div class="bg-white rounded shadow-sm">
-            <table class="table mb-0" id="detailsTable">
-                <thead>
-                    <tr>
-                        <th class="ps-4">#</th>
-                        <th>Order ID</th>
-                        <th>Product</th>
-                        <th>Category</th>
-                        <th>Unit Price</th>
-                        <th>Quantity</th>
-                        <th>Total Price</th>
-                        <th>Order Status</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @if (Model.Details.Count == 0)
-                    {
+        <div class="search-wrap">
+            <i class="bi bi-search search-icon"></i>
+            <input type="text" id="searchInput" class="search-input"
+                   placeholder="Search by product name, category or order ID..." />
+        </div>
+
+        <div class="table-card">
+            <div class="table-card-header">
+                <h6><i class="bi bi-table"></i> All Order Details</h6>
+                <span class="table-count-badge">@Model.Details.Count records</span>
+            </div>
+
+            <div class="table-responsive">
+                <table class="table" id="detailsTable">
+                    <thead>
                         <tr>
-                            <td colspan="9" class="text-center text-muted py-5">কোনো Order Details পাওয়া যায়নি</td>
+                            <th style="width:50px">#</th>
+                            <th>Order ID</th>
+                            <th>Product</th>
+                            <th>Category</th>
+                            <th>Unit Price</th>
+                            <th>Quantity</th>
+                            <th>Total Price</th>
+                            <th>Status</th>
+                            <th>Action</th>
                         </tr>
-                    }
-                    else
-                    {
-                        int i = 1;
-                        foreach (var detail in Model.Details)
+                    </thead>
+                    <tbody>
+                        @if (Model.Details.Count == 0)
                         {
-                            string statusColor = detail.Order?.OrderStatus switch
-                            {
-                                "Confirmed" => "success",
-                                "Cancelled" => "danger",
-                                _ => "warning"
-                            };
                             <tr>
-                                <td class="ps-4">@(i++)</td>
-                                <td>
-                                    <a href="/Admin/OrderDetails?OrderId=@detail.OrderId"
-                                       class="text-primary fw-bold text-decoration-none">
-                                        #@detail.OrderId
-                                    </a>
-                                </td>
-                                <td>@(detail.Product?.PName ?? "-")</td>
-                                <td>@(detail.Product?.Category ?? "-")</td>
-                                <td>$@detail.UnitPrice.ToString("F2")</td>
-                                <td>@detail.Quantity</td>
-                                <td class="fw-bold text-success">$@detail.TotalPrice.ToString("F2")</td>
-                                <td>
-                                    <span class="badge bg-@statusColor">
-                                        @(detail.Order?.OrderStatus ?? "-")
-                                    </span>
-                                </td>
-                                <td>
-                                    <button class="btn-delete"
-                                            onclick="confirmDelete('@detail.OrderDetailsId', '@(detail.Product?.PName ?? "-")')">
-                                        Delete
-                                    </button>
+                                <td colspan="9">
+                                    <div class="empty-state">
+                                        <div class="empty-icon"><i class="bi bi-inbox"></i></div>
+                                        <div style="font-weight:700; color:#64748b; font-size:1rem;">No order details found</div>
+                                        <div style="color:#94a3b8; font-size:0.85rem; margin-top:6px;">Order details will appear here once added.</div>
+                                    </div>
                                 </td>
                             </tr>
                         }
-                    }
-                </tbody>
-            </table>
+                        else
+                        {
+                            int i = 1;
+                            foreach (var detail in Model.Details)
+                            {
+                                string statusClass = detail.Order?.OrderStatus switch
+                                {
+                                                "Confirmed" => "status-confirmed",
+                                                "Cancelled" => "status-cancelled",
+                                    _ => "status-pending"
+                                };
+                                string statusIcon = detail.Order?.OrderStatus switch
+                                {
+                                                "Confirmed" => "bi-check-circle-fill",
+                                                "Cancelled" => "bi-x-circle-fill",
+                                    _ => "bi-clock-fill"
+                                };
+                                <tr>
+                                    <td><div class="row-num">@(i++)</div></td>
+                                    <td>
+                                        <a href="/Admin/OrderDetails?OrderId=@detail.OrderId" class="order-id-link">
+                                            <i class="bi bi-hash"></i>@detail.OrderId
+                                        </a>
+                                    </td>
+                                    <td><span class="product-name">@(detail.Product?.PName ?? "-")</span></td>
+                                    <td><span class="category-pill">@(detail.Product?.Category ?? "-")</span></td>
+                                    <td><span class="price-cell">$@detail.UnitPrice.ToString("F2")</span></td>
+                                    <td><span class="qty-badge">×@detail.Quantity</span></td>
+                                    <td><span class="total-cell">$@detail.TotalPrice.ToString("F2")</span></td>
+                                    <td>
+                                        <span class="status-badge @statusClass">
+                                            <i class="bi @statusIcon"></i>
+                                            @(detail.Order?.OrderStatus ?? "-")
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <button class="btn-delete"
+                                                onclick="confirmDelete('@detail.OrderDetailsId', '@(detail.Product?.PName ?? "-")')">
+                                            <i class="bi bi-trash3"></i> Delete
+                                        </button>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
         </div>
 
     </div>
@@ -140,19 +697,33 @@
     <div class="modal fade" id="deleteModal" tabindex="-1">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
-                <div class="modal-header border-0">
-                    <h5 class="modal-title fw-bold">Delete Order Detail</h5>
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <i class="bi bi-trash3-fill"></i> Delete Order Detail
+                    </h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
-                    <strong id="deleteDetailName"></strong> delete করতে চান?
+                    <div class="d-flex align-items-start gap-3">
+                        <div style="width:44px;height:44px;background:#fee2e2;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                            <i class="bi bi-exclamation-triangle-fill text-danger fs-5"></i>
+                        </div>
+                        <div>
+                            <div style="font-weight:700;color:#1e293b;margin-bottom:5px;">Are you sure?</div>
+                            <div style="color:#64748b;font-size:0.87rem;">
+                                <strong id="deleteDetailName" style="color:#1e40af;"></strong> 
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="modal-footer border-0">
-                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
-                    <form method="post" asp-page-handler="Delete">
+                <div class="modal-footer d-flex gap-2 justify-content-end">
+                    <button type="button" class="btn-cancel" data-bs-dismiss="modal">Cancel</button>
+                    <form method="post" asp-page-handler="Delete" class="d-inline">
                         @Html.AntiForgeryToken()
                         <input type="hidden" name="Id" id="deleteDetailId" />
-                        <button type="submit" class="btn btn-danger">Delete</button>
+                        <button type="submit" class="btn-confirm-delete">
+                            <i class="bi bi-trash3-fill me-1"></i> Yes, Delete
+                        </button>
                     </form>
                 </div>
             </div>

@@ -6,10 +6,11 @@ namespace Database.Model
     public class OrderDetails : BaseModel
     {
         [Key]
-        public int OrderDetailsId { get; set; }
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)] 
+        public int OrderDetailsId { get; set; }              
 
         [ForeignKey("Order")]
-        public int OrderId { get; set; }
+        public string OrderId { get; set; } = string.Empty;
         public Order? Order { get; set; }
 
         [ForeignKey("Product")]
