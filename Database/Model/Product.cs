@@ -23,8 +23,6 @@ namespace Database.Model
 
         [Range(0, 100000)]
         public decimal PPrice { get; set; }
-
-       
         
     }
 }

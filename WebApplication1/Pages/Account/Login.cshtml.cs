@@ -1,65 +1,55 @@
+using System.Security.Claims;
 using Business;
+using Business.FromModel;
 using Business.Services;
+using Database.Context;
 using Database.Model;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.AspNetCore.Identity;
+using static Business.FromModel.UserLoginFrom;
 
-namespace WebApplication1.Pages
+namespace WebApplication1.Pages.Account
 {
-    public class LoginModel(UserService service) : PageModel
+    public class LoginModel : PageModel
     {
-        private readonly UserService _service = service;
-
         [BindProperty]
-        public string Email { get; set; } = string.Empty;
-
-        [BindProperty]
-        public string Password { get; set; } = string.Empty;
-
-        public IActionResult OnGet()
+        public UserLoginForm loginForm { get; set; }
+        public void OnGet()
         {
-            if (HttpContext.Session.GetString("UserId") != null)
-                return RedirectToPage("/Admin/UserList");
+        }
+        public async Task<IActionResult> OnPostAsync()
+        {
+            var context = new IMSContext();
+            Result result = new UserService(context).Login(loginForm);
+
+            if (result.Success)
+            {
+                User user = result.Data as User;
+
+                var claims = new List<Claim>
+                  {
+                 new(ClaimTypes.NameIdentifier, user.UserId.ToString()),
+                     new(ClaimTypes.Name, user.UserName),  
+                     new(ClaimTypes.Role, user.RoleId.ToString())
+                  };
+
+                var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+                var principal = new ClaimsPrincipal(identity);
+
+                await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
+
+                return RedirectToPage("/Index");
+            }
 
             return Page();
         }
 
-        public IActionResult OnPost()
+        public async Task<IActionResult> OnGetLogoutAsync()
         {
-            if (string.IsNullOrWhiteSpace(Email) || string.IsNullOrWhiteSpace(Password))
-            {
-                ModelState.AddModelError("", "Email and Password are required!");
-                return Page();
-            }
-
-           
-            Result allResult = _service.GetAllUser();
-            List<User> users = allResult.Data as List<User> ?? new List<User>();
-            User? user = users.FirstOrDefault(u => u.Email == Email);
-
-            if (user == null)
-            {
-                ModelState.AddModelError("", "Invalid email or password!");
-                return Page();
-            }
-
-           
-            var hasher = new PasswordHasher<object>();
-            var verifyResult = hasher.VerifyHashedPassword(user, user.UserPassword!, Password);
-
-            if (verifyResult == PasswordVerificationResult.Failed)
-            {
-                ModelState.AddModelError("", "Invalid email or password!");
-                return Page();
-            }
-
-         
-            HttpContext.Session.SetString("UserId", user.UserId!);
-            HttpContext.Session.SetString("UserName", user.UserName!);
-            HttpContext.Session.SetString("RoleId", user.RoleId.ToString()!);
-
-            return RedirectToPage("/Admin/UserList");
+            await HttpContext.SignOutAsync();
+            return RedirectToPage("/Index");
         }
     }
 }

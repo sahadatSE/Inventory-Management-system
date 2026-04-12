@@ -3,103 +3,275 @@
 @{
     ViewData["Title"] = "Supplier List";
 }
-
-<style>
-    body {
-        background: #e8f0fe;
-    }
-
-    .page-header {
-        background: linear-gradient(135deg, #1a56db, #0d6efd);
-        color: white;
-        padding: 2rem;
-        border-radius: 16px;
-        margin-bottom: 1.5rem;
-    }
-
-    .search-box {
-        background: white;
-        border-radius: 12px;
-        padding: 1rem 1.5rem;
-        box-shadow: 0 2px 8px rgba(13,110,253,0.1);
-        margin-bottom: 1.5rem;
-    }
-
-    .table-card {
-        background: white;
-        border-radius: 16px;
-        overflow: hidden;
-        box-shadow: 0 4px 20px rgba(13,110,253,0.1);
-    }
-
-    .table thead tr {
-        background: #1a56db;
-        color: white;
-    }
-
-    .table thead th {
-        font-weight: 600;
-        padding: 1rem;
-        border: none;
-    }
-
-    .table tbody tr {
-        border-bottom: 1px solid #e8f0fe;
-        transition: background 0.2s;
-    }
-
-        .table tbody tr:hover {
-            background: #f0f5ff;
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Supplier List</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet" />
+    <style>
+        :root {
+            --blue-50:  #eff6ff;
+            --blue-100: #dbeafe;
+            --blue-200: #bfdbfe;
+            --blue-300: #93c5fd;
+            --blue-400: #60a5fa;
+            --blue-500: #3b82f6;
+            --blue-600: #2563eb;
+            --blue-700: #1d4ed8;
+            --blue-800: #1e40af;
+            --blue-900: #1e3a8a;
         }
 
-    .table tbody td {
-        padding: 0.85rem 1rem;
-        vertical-align: middle;
-    }
+        * { box-sizing: border-box; }
 
-    .badge-id {
-        background: #e8f0fe;
-        color: #1a56db;
-        font-weight: 700;
-        padding: 4px 10px;
-        border-radius: 6px;
-        font-size: 0.85rem;
-    }
-</style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #e0eaff 0%, #f0f5ff 50%, #e8f0fe 100%);
+            min-height: 100vh;
+            color: #1e3a8a;
+        }
 
-<div class="container mt-4">
+        body::before {
+            content: '';
+            position: fixed;
+            left: 0; top: 0;
+            width: 5px; height: 100%;
+            background: linear-gradient(180deg, var(--blue-500), var(--blue-800));
+            z-index: 999;
+        }
 
-    @if (TempData["SuccessMessage"] != null)
-    {
-        <div class="alert alert-success alert-dismissible fade show">
-            @TempData["SuccessMessage"]
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        </div>
-    }
+        /* ── Header ── */
+        .top-header {
+            background: linear-gradient(135deg, var(--blue-800) 0%, var(--blue-600) 100%);
+            padding: 18px 28px;
+            display: flex; align-items: center; justify-content: space-between;
+            box-shadow: 0 4px 24px rgba(30,64,175,0.35);
+            border-radius: 14px;
+            margin-bottom: 24px;
+        }
+        .header-left { display: flex; align-items: center; gap: 12px; }
+        .header-icon {
+            width: 44px; height: 44px;
+            background: rgba(255,255,255,0.18);
+            border-radius: 11px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 20px;
+        }
+        .header-title { color: #fff; font-weight: 800; font-size: 1.1rem; margin: 0; }
+        .header-sub   { color: var(--blue-200); font-size: 0.72rem; font-weight: 500; letter-spacing: 0.4px; }
+
+        .btn-add {
+            background: rgba(255,255,255,0.15);
+            color: #fff;
+            border: 1.5px solid rgba(255,255,255,0.3);
+            border-radius: 8px;
+            padding: 8px 18px;
+            font-size: 0.82rem; font-weight: 600;
+            text-decoration: none;
+            display: flex; align-items: center; gap: 6px;
+            transition: all 0.2s;
+        }
+        .btn-add:hover {
+            background: rgba(255,255,255,0.28);
+            color: #fff; transform: translateY(-1px);
+        }
+
+        /* ── Alert ── */
+        .alert-success {
+            background: #f0fdf4;
+            border-left: 4px solid #22c55e;
+            border-top: none; border-right: none; border-bottom: none;
+            color: #166534; border-radius: 10px;
+            padding: 13px 18px; font-size: 0.87rem; margin-bottom: 18px;
+        }
+
+        /* ── Search ── */
+        .search-wrap {
+            background: #fff;
+            border-radius: 14px;
+            padding: 14px 18px;
+            box-shadow: 0 2px 10px rgba(30,64,175,0.07);
+            border: 1px solid var(--blue-100);
+            margin-bottom: 20px;
+        }
+        .search-input-field {
+            border: 2px solid var(--blue-200) !important;
+            border-right: none !important;
+            border-radius: 10px 0 0 10px !important;
+            font-size: 0.875rem;
+            color: var(--blue-900);
+            padding: 10px 14px;
+            transition: all 0.2s;
+        }
+        .search-input-field:focus {
+            outline: none;
+            border-color: var(--blue-500) !important;
+            box-shadow: none !important;
+        }
+        .search-input-field::placeholder { color: #94a3b8; }
+        .input-group-text-custom {
+            background: #fff;
+            border: 2px solid var(--blue-200);
+            border-right: none;
+            border-radius: 10px 0 0 10px;
+            color: var(--blue-400);
+            padding: 10px 14px;
+        }
+        .btn-search {
+            background: linear-gradient(135deg, var(--blue-700), var(--blue-500));
+            color: #fff; border: none;
+            border-radius: 0 10px 10px 0;
+            padding: 10px 20px;
+            font-weight: 600; font-size: 0.85rem;
+            transition: all 0.2s;
+        }
+        .btn-search:hover { opacity: 0.9; }
+        .btn-clear {
+            background: #fff; color: #64748b;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 10px 16px;
+            font-weight: 600; font-size: 0.85rem;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+        .btn-clear:hover { background: #f1f5f9; color: #475569; }
+
+        /* ── Table Card ── */
+        .table-card {
+            background: #fff;
+            border-radius: 18px;
+            box-shadow: 0 4px 30px rgba(30,64,175,0.10);
+            border: 1px solid var(--blue-100);
+            overflow: hidden;
+        }
+        .table-card-header {
+            background: linear-gradient(135deg, var(--blue-700), var(--blue-500));
+            padding: 14px 22px;
+            display: flex; align-items: center; justify-content: space-between;
+        }
+        .table-card-header h6 {
+            color: #fff; font-weight: 700; font-size: 0.9rem;
+            margin: 0; display: flex; align-items: center; gap: 8px;
+        }
+        .table-count-badge {
+            background: rgba(255,255,255,0.2);
+            color: #fff; font-size: 0.72rem; font-weight: 700;
+            padding: 3px 10px; border-radius: 20px;
+        }
+
+        /* ── Table ── */
+        .table { margin: 0; }
+        .table thead th {
+            background: var(--blue-50);
+            font-weight: 700; font-size: 0.7rem;
+            text-transform: uppercase; letter-spacing: 0.7px;
+            color: var(--blue-700);
+            border-bottom: 2px solid var(--blue-100);
+            padding: 13px 16px; white-space: nowrap;
+        }
+        .table tbody tr { border-bottom: 1px solid #f1f5f9; transition: background 0.15s; }
+        .table tbody tr:hover { background: var(--blue-50); }
+        .table tbody tr:last-child { border-bottom: none; }
+        .table tbody td { padding: 12px 16px; font-size: 0.855rem; color: #334155; vertical-align: middle; }
+
+        .row-num {
+            width: 28px; height: 28px;
+            background: var(--blue-100); color: var(--blue-700);
+            border-radius: 8px;
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 700; font-size: 0.75rem;
+        }
+
+        /* ── Action buttons ── */
+        .btn-edit {
+            background: #fefce8; color: #854d0e;
+            border: 1.5px solid #fde68a; border-radius: 8px;
+            padding: 5px 12px; font-size: 0.76rem; font-weight: 600;
+            text-decoration: none;
+            display: inline-flex; align-items: center; gap: 5px;
+            transition: all 0.2s;
+        }
+        .btn-edit:hover {
+            background: #eab308; color: #fff;
+            border-color: #eab308; transform: translateY(-1px);
+        }
+        .btn-delete {
+            background: #fff0f0; color: #dc2626;
+            border: 1.5px solid #fecaca; border-radius: 8px;
+            padding: 5px 12px; font-size: 0.76rem; font-weight: 600;
+            cursor: pointer;
+            display: inline-flex; align-items: center; gap: 5px;
+            transition: all 0.2s;
+        }
+        .btn-delete:hover {
+            background: #dc2626; color: #fff;
+            border-color: #dc2626; transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(220,38,38,0.25);
+        }
+
+        /* ── Empty state ── */
+        .empty-state { padding: 60px 20px; text-align: center; }
+        .empty-icon {
+            width: 68px; height: 68px;
+            background: var(--blue-50); border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 28px; margin: 0 auto 14px; color: var(--blue-300);
+        }
+
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: var(--blue-50); }
+        ::-webkit-scrollbar-thumb { background: var(--blue-300); border-radius: 10px; }
+    </style>
+</head>
+<body>
+
+<div class="container-fluid px-4 py-4" style="max-width:1200px; margin:0 auto;">
 
     <!-- Header -->
-    <div class="page-header d-flex justify-content-between align-items-center">
-        <div>
-            <h4 class="fw-bold mb-1">Supplier Management</h4>
-            <small class="opacity-75">Manage all your suppliers in one place</small>
+    <div class="top-header mt-3">
+        <div class="header-left">
+            <div class="header-icon">🏭</div>
+            <div>
+                <div class="header-title">Supplier Management</div>
+                <div class="header-sub">ADMIN PANEL</div>
+            </div>
         </div>
-        <a asp-page="/Admin/Supplier" class="btn btn-light fw-bold text-primary">
-            + Add Supplier
+        <a asp-page="/Admin/Supplier" class="btn-add">
+            <i class="bi bi-plus-circle-fill"></i> Add Supplier
         </a>
     </div>
 
+    <!-- Alert -->
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert-success alert-dismissible fade show d-flex align-items-center gap-2 mb-4">
+            <i class="bi bi-check-circle-fill"></i>
+            @TempData["SuccessMessage"]
+            <button type="button" class="btn-close ms-auto" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
     <!-- Search -->
-    <div class="search-box">
+    <div class="search-wrap">
         <form method="get">
-            <div class="input-group">
-                <span class="input-group-text bg-white border-end-0">🔍</span>
-                <input type="text" name="search" value="@Model.SearchQuery"
-                       class="form-control border-start-0"
-                       placeholder="Search suppliers by name..." />
-                <button class="btn btn-primary" type="submit">Search</button>
+            <div class="d-flex gap-2 align-items-center">
+                <div class="input-group flex-grow-1" style="max-width:500px;">
+                    <span class="input-group-text-custom">
+                        <i class="bi bi-search"></i>
+                    </span>
+                    <input type="text" name="search" value="@Model.SearchQuery"
+                           class="form-control search-input-field"
+                           placeholder="Search suppliers by name..." />
+                    <button class="btn-search" type="submit">Search</button>
+                </div>
                 @if (!string.IsNullOrEmpty(Model.SearchQuery))
                 {
-                    <a asp-page="/Admin/SupplierList" class="btn btn-outline-secondary">Clear</a>
+                    <a asp-page="/Admin/SupplierList" class="btn-clear">
+                        <i class="bi bi-x-circle me-1"></i>Clear
+                    </a>
                 }
             </div>
         </form>
@@ -107,54 +279,70 @@
 
     <!-- Table -->
     <div class="table-card">
-        <table class="table mb-0">
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Name</th>
-                    <th>Email</th>
-                    <th>Phone</th>
-                    <th>Address</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                @if (!Model.List.Any())
-                {
+        <div class="table-card-header">
+            <h6><i class="bi bi-building"></i> All Suppliers</h6>
+            <span class="table-count-badge">@Model.List.Count() suppliers</span>
+        </div>
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
                     <tr>
-                        <td colspan="6" class="text-center text-muted py-5">
-                            No suppliers found.
-                        </td>
+                        <th style="width:50px">#</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Phone</th>
+                        <th>Address</th>
+                        <th class="text-center">Actions</th>
                     </tr>
-                }
-                else
-                {
-                    int i = 1;
-                    foreach (var s in Model.List)
+                </thead>
+                <tbody>
+                    @if (!Model.List.Any())
                     {
                         <tr>
-                            <td><span class="badge-id">@(i++)</span></td>
-                            <td class="fw-semibold">@s.SName</td>
-                            <td class="text-muted">@s.SEmail</td>
-                            <td>@s.SNumber</td>
-                            <td class="text-muted">@s.SAdress</td>
-                            <td>
-                                <a href="/Admin/Supplier?Id=@s.SId"
-                                   class="btn btn-sm btn-warning fw-semibold me-1">Edit</a>
-                                <form method="post" class="d-inline">
-                                    <input type="hidden" name="id" value="@s.SId" />
-                                    <button type="submit" asp-page-handler="Delete"
-                                            class="btn btn-sm btn-danger fw-semibold"
-                                            onclick="return confirm('Delete this supplier?')">
-                                        Delete
-                                    </button>
-                                </form>
+                            <td colspan="6">
+                                <div class="empty-state">
+                                    <div class="empty-icon"><i class="bi bi-building-x"></i></div>
+                                    <div style="font-weight:700;color:#64748b;font-size:1rem;">No suppliers found</div>
+                                    <div style="color:#94a3b8;font-size:0.83rem;margin-top:6px;">Suppliers will appear here once added.</div>
+                                </div>
                             </td>
                         </tr>
                     }
-                }
-            </tbody>
-        </table>
+                    else
+                    {
+                        int i = 1;
+                        foreach (var s in Model.List)
+                        {
+                            <tr>
+                                <td><div class="row-num">@(i++)</div></td>
+                                <td style="font-weight:600;color:#1e3a8a;">@s.SName</td>
+                                <td style="color:#475569;font-size:0.83rem;">@s.SEmail</td>
+                                <td style="color:#475569;">@s.SNumber</td>
+                                <td style="color:#475569;font-size:0.83rem;">@s.SAdress</td>
+                                <td class="text-center">
+                                    <div class="d-flex justify-content-center gap-2">
+                                        <a href="/Admin/Supplier?Id=@s.SId" class="btn-edit">
+                                            <i class="bi bi-pencil-fill"></i> Edit
+                                        </a>
+                                        <form method="post" class="d-inline">
+                                            <input type="hidden" name="id" value="@s.SId" />
+                                            <button type="submit" asp-page-handler="Delete" class="btn-delete"
+                                                    onclick="return confirm('Delete this supplier?')">
+                                                <i class="bi bi-trash3"></i> Delete
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
     </div>
 
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

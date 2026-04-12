@@ -3,9 +3,288 @@
 @{
     ViewData["Title"] = "Home page";
 }
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>@ViewData["Title"]</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet"/>
+    <style>
+        :root {
+            --blue-50:  #eff6ff;
+            --blue-100: #dbeafe;
+            --blue-200: #bfdbfe;
+            --blue-300: #93c5fd;
+            --blue-400: #60a5fa;
+            --blue-500: #3b82f6;
+            --blue-600: #2563eb;
+            --blue-700: #1d4ed8;
+            --blue-800: #1e40af;
+            --blue-900: #1e3a8a;
+        }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome To NextTap Zone</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+        * { box-sizing: border-box; }
+
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #e0eaff 0%, #f0f5ff 50%, #e8f0fe 100%);
+            min-height: 100vh;
+            color: #1e3a8a;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            left: 0; top: 0;
+            width: 5px; height: 100%;
+            background: linear-gradient(180deg, var(--blue-500), var(--blue-800));
+            z-index: 999;
+        }
+
+        /* ── Hero ── */
+        .hero-wrap {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem 1.5rem;
+        }
+
+        /* ── Logo badge ── */
+        .logo-badge {
+            width: 80px; height: 80px;
+            background: linear-gradient(135deg, var(--blue-800), var(--blue-500));
+            border-radius: 22px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 2.2rem;
+            box-shadow: 0 8px 30px rgba(30,64,175,0.35);
+            margin-bottom: 28px;
+        }
+
+        /* ── Card ── */
+        .hero-card {
+            background: #fff;
+            border-radius: 24px;
+            box-shadow: 0 8px 40px rgba(30,64,175,0.12);
+            border: 1px solid var(--blue-100);
+            padding: 48px 44px;
+            max-width: 580px;
+            width: 100%;
+            text-align: center;
+        }
+
+        .hero-title {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--blue-900);
+            line-height: 1.2;
+            margin-bottom: 12px;
+        }
+
+        .hero-title span {
+            background: linear-gradient(135deg, var(--blue-700), var(--blue-500));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-sub {
+            font-size: 0.92rem;
+            color: #64748b;
+            margin-bottom: 36px;
+            line-height: 1.7;
+        }
+
+        /* ── Divider ── */
+        .divider {
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--blue-200), transparent);
+            margin: 28px 0;
+        }
+
+        /* ── Stat pills ── */
+        .stat-row {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-bottom: 36px;
+        }
+        .stat-pill {
+            background: var(--blue-50);
+            border: 1px solid var(--blue-100);
+            border-radius: 30px;
+            padding: 8px 18px;
+            display: flex; align-items: center; gap: 8px;
+            font-size: 0.8rem; font-weight: 700;
+            color: var(--blue-700);
+        }
+        .stat-pill i { font-size: 0.95rem; }
+
+        /* ── Buttons ── */
+        .btn-primary-custom {
+            background: linear-gradient(135deg, var(--blue-700), var(--blue-500));
+            color: #fff; border: none;
+            border-radius: 12px;
+            padding: 13px 32px;
+            font-weight: 700; font-size: 0.92rem;
+            text-decoration: none;
+            display: inline-flex; align-items: center; gap: 8px;
+            transition: all 0.2s;
+            box-shadow: 0 4px 16px rgba(30,64,175,0.3);
+        }
+        .btn-primary-custom:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(30,64,175,0.4);
+            color: #fff;
+        }
+
+        .btn-outline-custom {
+            background: #fff;
+            color: var(--blue-700);
+            border: 2px solid var(--blue-200);
+            border-radius: 12px;
+            padding: 13px 32px;
+            font-weight: 700; font-size: 0.92rem;
+            text-decoration: none;
+            display: inline-flex; align-items: center; gap: 8px;
+            transition: all 0.2s;
+        }
+        .btn-outline-custom:hover {
+            border-color: var(--blue-500);
+            background: var(--blue-50);
+            color: var(--blue-800);
+            transform: translateY(-2px);
+        }
+
+        /* ── Feature cards ── */
+        .features {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-top: 36px;
+        }
+        .feature-item {
+            background: var(--blue-50);
+            border: 1px solid var(--blue-100);
+            border-radius: 14px;
+            padding: 18px 14px;
+            text-align: center;
+            transition: all 0.2s;
+        }
+        .feature-item:hover {
+            background: var(--blue-100);
+            transform: translateY(-2px);
+        }
+        .feature-icon {
+            width: 42px; height: 42px;
+            background: linear-gradient(135deg, var(--blue-700), var(--blue-500));
+            border-radius: 11px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.1rem; color: #fff;
+            margin: 0 auto 10px;
+        }
+        .feature-label {
+            font-size: 0.78rem;
+            font-weight: 700;
+            color: var(--blue-800);
+        }
+        .feature-desc {
+            font-size: 0.7rem;
+            color: #64748b;
+            margin-top: 3px;
+        }
+
+        /* ── Footer note ── */
+        .footer-note {
+            margin-top: 32px;
+            font-size: 0.75rem;
+            color: #94a3b8;
+        }
+        .footer-note a {
+            color: var(--blue-500);
+            text-decoration: none;
+            font-weight: 600;
+        }
+        .footer-note a:hover { text-decoration: underline; }
+
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: var(--blue-50); }
+        ::-webkit-scrollbar-thumb { background: var(--blue-300); border-radius: 10px; }
+    </style>
+</head>
+<body>
+
+<div class="hero-wrap">
+
+    <div class="logo-badge">🏪</div>
+
+    <div class="hero-card">
+
+        <h1 class="hero-title">
+            Welcome To <span>NextTap Zone</span>
+        </h1>
+        <p class="hero-sub">
+            A complete inventory management system to track your products,
+            stock, orders, suppliers and users — all in one place.
+        </p>
+
+        <!-- Stat pills -->
+        <div class="stat-row">
+            <div class="stat-pill">
+                <i class="bi bi-box-seam-fill"></i> Stock Management
+            </div>
+            <div class="stat-pill">
+                <i class="bi bi-bag-check-fill"></i> Order Tracking
+            </div>
+            <div class="stat-pill">
+                <i class="bi bi-people-fill"></i> User Control
+            </div>
+        </div>
+
+        <!-- Buttons -->
+        <div class="d-flex justify-content-center gap-3 flex-wrap">
+            <a href="/Admin/Dashboard" class="btn-primary-custom">
+                <i class="bi bi-speedometer2"></i> Go to Dashboard
+            </a>
+            <a href="/Admin/UserList" class="btn-outline-custom">
+                <i class="bi bi-people-fill"></i> Manage Users
+            </a>
+        </div>
+
+        <div class="divider"></div>
+
+        <!-- Feature cards -->
+        <div class="features">
+            <div class="feature-item">
+                <div class="feature-icon"><i class="bi bi-box-seam-fill"></i></div>
+                <div class="feature-label">Products</div>
+                <div class="feature-desc">Manage inventory</div>
+            </div>
+            <div class="feature-item">
+                <div class="feature-icon"><i class="bi bi-bag-fill"></i></div>
+                <div class="feature-label">Orders</div>
+                <div class="feature-desc">Track all orders</div>
+            </div>
+            <div class="feature-item">
+                <div class="feature-icon"><i class="bi bi-building"></i></div>
+                <div class="feature-label">Suppliers</div>
+                <div class="feature-desc">Supplier records</div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="footer-note">
+        Built with <a href="https://learn.microsoft.com/aspnet/core">ASP.NET Core</a> &mdash; NextTap Zone &copy; @DateTime.Now.Year
+    </div>
+
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
 

@@ -1,10 +1,12 @@
 using Business.Services;
 using Database.Model;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace WebApplication1.Pages.Admin
 {
+    [Authorize(Roles = "1,2")]
     public class SupplierListModel(SupplierService service) : PageModel
     {
         private readonly SupplierService _service = service;

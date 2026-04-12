@@ -3,15 +3,33 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
+using Business.FromModel;
 using Database.Context;
 using Database.Model;
 using Microsoft.AspNetCore.Identity;
+using static Business.FromModel.UserLoginFrom;
 
 namespace Business.Services
 {
     public class UserService(IMSContext context)
     {
         private readonly IMSContext _context = context;
+
+        public Result Login(UserLoginForm user)
+        {
+            User? dbuser = _context.User.Where(x => x.Email == user.Email).FirstOrDefault();
+            if (dbuser == null) return new Result(false, "User not found");
+
+            PasswordVerificationResult HashResult = new PasswordHasher<User>().VerifyHashedPassword(dbuser, dbuser.UserPassword, user.UserPassword);
+            if (HashResult != PasswordVerificationResult.Failed)
+            {
+                return new Result(true, $"{dbuser.UserName} successfully logged in!", dbuser);
+            }
+            else
+            {
+                return new Result(false, "Incorrect Password");
+            }
+        }
 
         public Result AddUser(User user)
         {

@@ -7,13 +7,13 @@ using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
-#nullable disable
+using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Database.Migrations
 {
     [DbContext(typeof(IMSContext))]
     [Migration("20260329200806_twe")]
-    partial class twe
+    partial class Twe : Migration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

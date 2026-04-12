@@ -1,11 +1,13 @@
 using Business;
 using Business.Services;
 using Database.Model;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace WebApplication1.Pages.Admin
 {
+    [Authorize(Roles = "1")]
     public class UserListModel(UserService service) : PageModel
     {
         private readonly UserService _service = service;

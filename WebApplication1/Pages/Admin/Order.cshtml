@@ -8,243 +8,482 @@
     <meta charset="UTF-8" />
     <title>@ViewData["Title"]</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet" />
     <style>
-        body {
-            background-color: #f8f9fa;
+        :root {
+            --blue-50:  #eff6ff;
+            --blue-100: #dbeafe;
+            --blue-200: #bfdbfe;
+            --blue-300: #93c5fd;
+            --blue-400: #60a5fa;
+            --blue-500: #3b82f6;
+            --blue-600: #2563eb;
+            --blue-700: #1d4ed8;
+            --blue-800: #1e40af;
+            --blue-900: #1e3a8a;
         }
 
-        .product-card {
-            border: 2px solid #dee2e6;
+        * { box-sizing: border-box; }
+
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #e0eaff 0%, #f0f5ff 50%, #e8f0fe 100%);
+            min-height: 100vh;
+            color: #1e3a8a;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            left: 0; top: 0;
+            width: 5px; height: 100%;
+            background: linear-gradient(180deg, var(--blue-500), var(--blue-800));
+            z-index: 999;
+        }
+
+        /* ── Header ── */
+        .top-header {
+            background: linear-gradient(135deg, var(--blue-800) 0%, var(--blue-600) 100%);
+            padding: 18px 28px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 4px 24px rgba(30,64,175,0.35);
+            border-radius: 14px;
+            margin-bottom: 24px;
+        }
+        .header-left { display: flex; align-items: center; gap: 12px; }
+        .header-icon {
+            width: 44px; height: 44px;
+            background: rgba(255,255,255,0.18);
+            border-radius: 11px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 20px;
+        }
+        .header-title { color: #fff; font-weight: 800; font-size: 1.1rem; margin: 0; }
+        .header-sub   { color: var(--blue-200); font-size: 0.72rem; font-weight: 500; letter-spacing: 0.4px; }
+
+        .btn-back {
+            background: rgba(255,255,255,0.15);
+            color: #fff;
+            border: 1.5px solid rgba(255,255,255,0.3);
+            border-radius: 8px;
+            padding: 8px 18px;
+            font-size: 0.82rem;
+            font-weight: 600;
+            text-decoration: none;
+            display: flex; align-items: center; gap: 6px;
+            transition: all 0.2s;
+        }
+        .btn-back:hover {
+            background: rgba(255,255,255,0.28);
+            color: #fff;
+            transform: translateY(-1px);
+        }
+
+        /* ── Alert ── */
+        .alert-danger {
+            background: #fef2f2;
+            border-left: 4px solid #ef4444;
+            border-top: none; border-right: none; border-bottom: none;
+            color: #991b1b; border-radius: 10px;
+            padding: 13px 18px; font-size: 0.87rem; margin-bottom: 18px;
+        }
+
+        /* ── Search ── */
+        .search-wrap { position: relative; margin-bottom: 16px; }
+        .search-wrap .bi-search {
+            position: absolute; left: 14px; top: 50%;
+            transform: translateY(-50%);
+            color: var(--blue-400); font-size: 14px; pointer-events: none;
+        }
+        .search-input {
+            width: 100%;
+            padding: 10px 16px 10px 40px;
             border-radius: 10px;
+            border: 2px solid var(--blue-200);
+            background: #fff;
+            font-size: 0.86rem;
+            color: var(--blue-900);
+            transition: all 0.2s;
+            box-shadow: 0 2px 10px rgba(30,64,175,0.06);
+        }
+        .search-input:focus {
+            outline: none;
+            border-color: var(--blue-500);
+            box-shadow: 0 0 0 4px rgba(59,130,246,0.12);
+        }
+        .search-input::placeholder { color: #94a3b8; }
+
+        /* ── Card shell ── */
+        .panel-card {
+            background: #fff;
+            border-radius: 18px;
+            box-shadow: 0 4px 30px rgba(30,64,175,0.10);
+            border: 1px solid var(--blue-100);
+            overflow: hidden;
+        }
+        .panel-header {
+            background: linear-gradient(135deg, var(--blue-700), var(--blue-500));
+            padding: 14px 22px;
+            display: flex; align-items: center; gap: 8px;
+        }
+        .panel-header span {
+            color: #fff; font-weight: 700; font-size: 0.9rem;
+        }
+        .panel-header-warning {
+            background: linear-gradient(135deg, #b45309, #d97706);
+            padding: 14px 22px;
+            display: flex; align-items: center; gap: 8px;
+        }
+        .panel-header-warning span {
+            color: #fff; font-weight: 700; font-size: 0.9rem;
+        }
+
+        /* ── Product cards ── */
+        .product-card {
+            border: 2px solid var(--blue-100);
+            border-radius: 12px;
             padding: 15px;
             background: #fff;
             cursor: pointer;
             transition: all 0.2s;
+            height: 100%;
+        }
+        .product-card:hover {
+            border-color: var(--blue-500);
+            box-shadow: 0 4px 16px rgba(30,64,175,0.12);
+            transform: translateY(-2px);
+        }
+        .product-card.selected {
+            border-color: var(--blue-600);
+            background: var(--blue-50);
+            box-shadow: 0 4px 16px rgba(30,64,175,0.15);
+        }
+        .product-card.stockout {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        .product-name {
+            font-weight: 700;
+            color: var(--blue-900);
+            font-size: 0.9rem;
+            margin-bottom: 2px;
+        }
+        .product-category {
+            font-size: 0.75rem;
+            color: #64748b;
+        }
+        .product-price {
+            font-weight: 700;
+            color: #16a34a;
+            font-size: 0.9rem;
+        }
+        .stock-info {
+            font-size: 0.75rem;
+            color: #64748b;
         }
 
-            .product-card:hover {
-                border-color: #0d6efd;
-                box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-            }
+        /* ── Summary table ── */
+        .table { margin: 0; }
+        .table thead th {
+            background: var(--blue-50);
+            font-weight: 700; font-size: 0.7rem;
+            text-transform: uppercase; letter-spacing: 0.6px;
+            color: var(--blue-700);
+            border-bottom: 2px solid var(--blue-100);
+            padding: 11px 12px; white-space: nowrap;
+        }
+        .table tbody tr { border-bottom: 1px solid #f1f5f9; }
+        .table tbody tr:last-child { border-bottom: none; }
+        .table tbody td { padding: 10px 12px; font-size: 0.83rem; color: #334155; vertical-align: middle; }
 
-            .product-card.selected {
-                border-color: #0d6efd;
-                background: #f0f7ff;
-            }
+        /* ── Footer ── */
+        .summary-footer {
+            padding: 16px 18px;
+            border-top: 1px solid var(--blue-100);
+            background: var(--blue-50);
+        }
+        .total-label { font-weight: 700; color: var(--blue-900); font-size: 0.9rem; }
+        .total-value { font-weight: 800; color: #16a34a; font-size: 1.1rem; }
 
-            .product-card.stockout {
-                opacity: 0.5;
-                cursor: not-allowed;
-            }
+        .btn-place-order {
+            background: linear-gradient(135deg, var(--blue-700), var(--blue-500));
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            padding: 11px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            width: 100%;
+            transition: all 0.2s;
+            box-shadow: 0 4px 14px rgba(30,64,175,0.3);
+        }
+        .btn-place-order:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 18px rgba(30,64,175,0.4);
+        }
+
+        .btn-remove {
+            background: #fff0f0; color: #dc2626;
+            border: 1.5px solid #fecaca; border-radius: 7px;
+            padding: 3px 8px; font-size: 0.75rem; font-weight: 600;
+            cursor: pointer; transition: all 0.2s;
+        }
+        .btn-remove:hover {
+            background: #dc2626; color: #fff; border-color: #dc2626;
+        }
+
+        .qty-input {
+            width: 62px;
+            padding: 4px 8px;
+            border-radius: 7px;
+            border: 2px solid var(--blue-200);
+            font-size: 0.82rem;
+            color: var(--blue-900);
+            text-align: center;
+            transition: all 0.2s;
+        }
+        .qty-input:focus {
+            outline: none;
+            border-color: var(--blue-500);
+            box-shadow: 0 0 0 3px rgba(59,130,246,0.12);
+        }
+
+        .empty-msg {
+            color: #94a3b8; font-size: 0.82rem; text-align: center; padding: 24px 12px;
+        }
+
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: var(--blue-50); }
+        ::-webkit-scrollbar-thumb { background: var(--blue-300); border-radius: 10px; }
     </style>
 </head>
 <body>
-    <div class="container mt-4">
 
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <h4 class="fw-bold mb-0">🛒 Place Order</h4>
-            <a href="/Admin/OrderList" class="btn btn-outline-secondary btn-sm">← Order List</a>
+<div class="container-fluid px-4 py-4" style="max-width:1200px; margin:0 auto;">
+
+    <!-- Header -->
+    <div class="top-header mt-3">
+        <div class="header-left">
+            <div class="header-icon">🛒</div>
+            <div>
+                <div class="header-title">Place Order</div>
+                <div class="header-sub">ADMIN PANEL</div>
+            </div>
         </div>
-
-        @if (!ViewData.ModelState.IsValid)
-        {
-            <div class="alert alert-danger">
-                <ul class="mb-0">
-                    @foreach (var error in ModelState.Values.SelectMany(v => v.Errors))
-                    {
-                        <li>@error.ErrorMessage</li>
-                    }
-                </ul>
-            </div>
-        }
-
-        <form method="post" id="orderForm">
-            @Html.AntiForgeryToken()
-            <div id="hiddenInputs"></div>
-
-            <div class="row g-4">
-
-                <!-- Left: Product Cards -->
-                <div class="col-md-8">
-                    <div class="card shadow-sm">
-                        <div class="card-header bg-primary text-white fw-bold">
-                            📦 Select Products
-                        </div>
-                        <div class="card-body">
-                            <input type="text" id="productSearch" class="form-control mb-3"
-                                   placeholder="Search product..." />
-                            <div class="row g-3">
-                                @foreach (var product in Model.Products)
-                                {
-                                    int available = product.PQuantity;
-                                    bool isStockOut = available == 0;
-                                    string priceStr = product.PPrice.ToString("F2").Replace(",", ".");
-
-                                    <div class="col-md-6 product-item"
-                                         data-name="@product.PName.ToLower()">
-                                        <div class="product-card @(isStockOut ? "stockout" : "")"
-                                             id="card_@product.PId"
-                                             onclick="@(isStockOut ? "" : $"toggleProduct({product.PId}, {priceStr}, '{product.PName}', {available}, this)")">
-                                            <div class="d-flex justify-content-between align-items-start mb-2">
-                                                <div>
-                                                    <p class="fw-bold mb-0">@product.PName</p>
-                                                    <small class="text-muted">@product.Category</small>
-                                                </div>
-                                                @if (isStockOut)
-                                                {
-                                                    <span class="badge bg-danger">Stock Out</span>
-                                                }
-                                                else
-                                                {
-                                                    <span class="badge bg-success">Available</span>
-                                                }
-                                            </div>
-                                            <div class="d-flex justify-content-between align-items-center">
-                                                <small class="text-muted">Stock: <strong>@available</strong></small>
-                                                <span class="text-success fw-bold">$@product.PPrice.ToString("F2")</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                }
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Right: Selected Table -->
-                <div class="col-md-4">
-                    <div class="card shadow-sm">
-                        <div class="card-header bg-warning text-dark fw-bold">
-                            🧾 Order Summary
-                        </div>
-                        <div class="card-body p-0">
-                            <table class="table table-sm mb-0" id="selectedTable">
-                                <thead class="table-light">
-                                    <tr>
-                                        <th class="ps-3">Product</th>
-                                        <th>Qty</th>
-                                        <th>Total</th>
-                                        <th></th>
-                                    </tr>
-                                </thead>
-                                <tbody id="selectedBody">
-                                    <tr id="emptyRow">
-                                        <td colspan="4" class="text-center text-muted py-3 small">
-                                            No product selected
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                        <div class="card-footer">
-                            <div class="d-flex justify-content-between fw-bold text-success mb-3">
-                                <span>Total Price:</span>
-                                <span id="totalPrice">$0.00</span>
-                            </div>
-                            <button type="submit" class="btn btn-primary w-100 fw-bold">
-                                ✅ Place Order
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-        </form>
+        <a href="/Admin/OrderList" class="btn-back">
+            <i class="bi bi-arrow-left"></i> Order List
+        </a>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-        let selectedProducts = {};
+    <!-- Validation errors -->
+    @if (!ViewData.ModelState.IsValid)
+    {
+        <div class="alert alert-danger d-flex align-items-start gap-2">
+            <i class="bi bi-exclamation-circle-fill mt-1"></i>
+            <ul class="mb-0 ps-2">
+                @foreach (var error in ModelState.Values.SelectMany(v => v.Errors))
+                {
+                    <li>@error.ErrorMessage</li>
+                }
+            </ul>
+        </div>
+    }
 
-        function toggleProduct(pid, price, name, maxQty, card) {
-            if (selectedProducts[pid]) {
-                removeProduct(pid);
-            } else {
-                selectedProducts[pid] = { price: price, name: name, qty: 1, maxQty: maxQty };
-                card.classList.add('selected');
-                addToTable(pid);
-            }
-            updateTotal();
+    <form method="post" id="orderForm">
+        @Html.AntiForgeryToken()
+        <div id="hiddenInputs"></div>
+
+        <div class="row g-4">
+
+            <!-- Left: Product Cards -->
+            <div class="col-md-8">
+                <div class="panel-card">
+                    <div class="panel-header">
+                        <i class="bi bi-box-seam-fill text-white"></i>
+                        <span>Select Products</span>
+                    </div>
+                    <div class="p-3">
+                        <div class="search-wrap">
+                            <i class="bi bi-search"></i>
+                            <input type="text" id="productSearch" class="search-input"
+                                   placeholder="Search product..." />
+                        </div>
+                        <div class="row g-3">
+                            @foreach (var product in Model.Products)
+                            {
+                                int available = product.PQuantity;
+                                bool isStockOut = available == 0;
+                                string priceStr = product.PPrice.ToString("F2").Replace(",", ".");
+
+                                <div class="col-md-6 product-item"
+                                     data-name="@product.PName.ToLower()">
+                                    <div class="product-card @(isStockOut ? "stockout" : "")"
+                                         id="card_@product.PId"
+                                         onclick="@(isStockOut ? "" : $"toggleProduct({product.PId}, {priceStr}, '{product.PName}', {available}, this)")">
+                                        <div class="d-flex justify-content-between align-items-start mb-2">
+                                            <div>
+                                                <div class="product-name">@product.PName</div>
+                                                <div class="product-category">@product.Category</div>
+                                            </div>
+                                            @if (isStockOut)
+                                            {
+                                                <span class="badge bg-danger" style="font-size:0.68rem;">Stock Out</span>
+                                            }
+                                            else
+                                            {
+                                                <span class="badge" style="background:var(--blue-100);color:var(--blue-700);font-size:0.68rem;font-weight:700;">Available</span>
+                                            }
+                                        </div>
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <span class="stock-info">Stock: <strong>@available</strong></span>
+                                            <span class="product-price">$@product.PPrice.ToString("F2")</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right: Order Summary -->
+            <div class="col-md-4">
+                <div class="panel-card">
+                    <div class="panel-header-warning">
+                        <i class="bi bi-receipt text-white"></i>
+                        <span>Order Summary</span>
+                    </div>
+                    <div style="overflow-x:auto;">
+                        <table class="table" id="selectedTable">
+                            <thead>
+                                <tr>
+                                    <th class="ps-3">Product</th>
+                                    <th>Qty</th>
+                                    <th>Total</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody id="selectedBody">
+                                <tr id="emptyRow">
+                                    <td colspan="4">
+                                        <div class="empty-msg">
+                                            <i class="bi bi-cart-x d-block mb-1" style="font-size:1.5rem;color:var(--blue-300);"></i>
+                                            No product selected
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="summary-footer">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <span class="total-label">Total Price:</span>
+                            <span class="total-value" id="totalPrice">$0.00</span>
+                        </div>
+                        <button type="submit" class="btn-place-order">
+                            <i class="bi bi-check-circle-fill me-2"></i> Place Order
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </form>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    let selectedProducts = {};
+
+    function toggleProduct(pid, price, name, maxQty, card) {
+        if (selectedProducts[pid]) {
+            removeProduct(pid);
+        } else {
+            selectedProducts[pid] = { price: price, name: name, qty: 1, maxQty: maxQty };
+            card.classList.add('selected');
+            addToTable(pid);
         }
+        updateTotal();
+    }
 
-        function addToTable(pid) {
+    function addToTable(pid) {
+        const item = selectedProducts[pid];
+        const tbody = document.getElementById('selectedBody');
+        document.getElementById('emptyRow').style.display = 'none';
+
+        const tr = document.createElement('tr');
+        tr.id = 'row_' + pid;
+        tr.innerHTML = `
+            <td class="ps-3" style="font-weight:600;color:#1e3a8a;font-size:0.82rem;">${item.name}</td>
+            <td>
+                <input type="number" class="qty-input"
+                       value="1" min="1" max="${item.maxQty}"
+                       onchange="updateQty(${pid}, this.value)" />
+            </td>
+            <td style="font-weight:700;color:#16a34a;font-size:0.83rem;" id="total_${pid}">
+                $${(item.price * 1).toFixed(2)}
+            </td>
+            <td>
+                <button type="button" class="btn-remove" onclick="removeProduct(${pid})">
+                    <i class="bi bi-x"></i>
+                </button>
+            </td>`;
+        tbody.appendChild(tr);
+        updateHidden();
+    }
+
+    function updateQty(pid, qty) {
+        qty = parseInt(qty) || 1;
+        selectedProducts[pid].qty = qty;
+        const price = selectedProducts[pid].price;
+        document.getElementById('total_' + pid).innerText = '$' + (price * qty).toFixed(2);
+        updateTotal();
+        updateHidden();
+    }
+
+    function removeProduct(pid) {
+        delete selectedProducts[pid];
+        const row = document.getElementById('row_' + pid);
+        if (row) row.remove();
+        const card = document.getElementById('card_' + pid);
+        if (card) card.classList.remove('selected');
+        if (Object.keys(selectedProducts).length === 0) {
+            document.getElementById('emptyRow').style.display = '';
+        }
+        updateTotal();
+        updateHidden();
+    }
+
+    function updateTotal() {
+        let total = 0;
+        for (const pid in selectedProducts) {
+            total += selectedProducts[pid].price * selectedProducts[pid].qty;
+        }
+        document.getElementById('totalPrice').innerText = '$' + total.toFixed(2);
+    }
+
+    function updateHidden() {
+        const hiddenInputs = document.getElementById('hiddenInputs');
+        hiddenInputs.innerHTML = '';
+        let i = 0;
+        for (const pid in selectedProducts) {
             const item = selectedProducts[pid];
-            const tbody = document.getElementById('selectedBody');
-            document.getElementById('emptyRow').style.display = 'none';
-
-            const tr = document.createElement('tr');
-            tr.id = 'row_' + pid;
-            tr.innerHTML = `
-                <td class="ps-3 small fw-bold">${item.name}</td>
-                <td>
-                    <input type="number" class="form-control form-control-sm"
-                           style="width:60px;"
-                           value="1" min="1" max="${item.maxQty}"
-                           onchange="updateQty(${pid}, this.value)" />
-                </td>
-                <td class="text-success fw-bold" id="total_${pid}">
-                    $${(item.price * 1).toFixed(2)}
-                </td>
-                <td>
-                    <button type="button" class="btn btn-sm btn-outline-danger"
-                            onclick="removeProduct(${pid})">✕</button>
-                </td>`;
-            tbody.appendChild(tr);
-            updateHidden();
+            hiddenInputs.innerHTML += `
+                <input type="hidden" name="SelectedProducts[${i}].PId" value="${pid}" />
+                <input type="hidden" name="SelectedProducts[${i}].Quantity" value="${item.qty}" />
+                <input type="hidden" name="SelectedProducts[${i}].UnitPrice" value="${item.price}" />`;
+            i++;
         }
+    }
 
-        function updateQty(pid, qty) {
-            qty = parseInt(qty) || 1;
-            selectedProducts[pid].qty = qty;
-            const price = selectedProducts[pid].price;
-            document.getElementById('total_' + pid).innerText = '$' + (price * qty).toFixed(2);
-            updateTotal();
-            updateHidden();
-        }
-
-        function removeProduct(pid) {
-            delete selectedProducts[pid];
-            const row = document.getElementById('row_' + pid);
-            if (row) row.remove();
-
-            const card = document.getElementById('card_' + pid);
-            if (card) card.classList.remove('selected');
-
-            if (Object.keys(selectedProducts).length === 0) {
-                document.getElementById('emptyRow').style.display = '';
-            }
-            updateTotal();
-            updateHidden();
-        }
-
-        function updateTotal() {
-            let total = 0;
-            for (const pid in selectedProducts) {
-                total += selectedProducts[pid].price * selectedProducts[pid].qty;
-            }
-            document.getElementById('totalPrice').innerText = '$' + total.toFixed(2);
-        }
-
-        function updateHidden() {
-            const hiddenInputs = document.getElementById('hiddenInputs');
-            hiddenInputs.innerHTML = '';
-            let i = 0;
-            for (const pid in selectedProducts) {
-                const item = selectedProducts[pid];
-                hiddenInputs.innerHTML += `
-                    <input type="hidden" name="SelectedProducts[${i}].PId" value="${pid}" />
-                    <input type="hidden" name="SelectedProducts[${i}].Quantity" value="${item.qty}" />
-                    <input type="hidden" name="SelectedProducts[${i}].UnitPrice" value="${item.price}" />`;
-                i++;
-            }
-        }
-
-        document.getElementById('productSearch').addEventListener('input', function () {
-            const search = this.value.toLowerCase();
-            document.querySelectorAll('.product-item').forEach(item => {
-                item.style.display = item.dataset.name.includes(search) ? '' : 'none';
-            });
+    document.getElementById('productSearch').addEventListener('input', function () {
+        const search = this.value.toLowerCase();
+        document.querySelectorAll('.product-item').forEach(item => {
+            item.style.display = item.dataset.name.includes(search) ? '' : 'none';
         });
-    </script>
+    });
+</script>
 </body>
 </html>
