@@ -26,14 +26,22 @@ namespace WebApplication1.Pages.Account
 
             if (result.Success)
             {
-                User user = result.Data as User;
+                // ✅ as এর বদলে সরাসরি cast করো
+                User user = (User)result.Data;
 
                 var claims = new List<Claim>
-                  {
-                 new(ClaimTypes.NameIdentifier, user.UserId.ToString()),
-                     new(ClaimTypes.Name, user.UserName),  
-                     new(ClaimTypes.Role, user.RoleId.ToString())
-                  };
+        {
+            new(ClaimTypes.NameIdentifier, user.UserId.ToString()),
+            new(ClaimTypes.Name,           user.UserName),
+            new(ClaimTypes.Role,           user.RoleId.ToString()),
+            new("RoleId",                  user.RoleId.ToString()),
+        };
+
+                // ✅ Email property আছে কিনা দেখো
+                if (!string.IsNullOrEmpty(user.Email))
+                {
+                    claims.Add(new Claim(ClaimTypes.Email, user.Email));
+                }
 
                 var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
                 var principal = new ClaimsPrincipal(identity);

@@ -3,162 +3,429 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - WebApplication1</title>
-    <script type="importmap"></script>
+    <title>@ViewData["Title"] - NextTap Zone</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/WebApplication1.styles.css" asp-append-version="true" />
+    <style>
+        :root {
+            --blue-50:  #eff6ff;
+            --blue-100: #dbeafe;
+            --blue-200: #bfdbfe;
+            --blue-300: #93c5fd;
+            --blue-400: #60a5fa;
+            --blue-500: #3b82f6;
+            --blue-600: #2563eb;
+            --blue-700: #1d4ed8;
+            --blue-800: #1e40af;
+            --blue-900: #1e3a8a;
+        }
+
+        body { background: linear-gradient(135deg, #e0eaff 0%, #f0f5ff 50%, #e8f0fe 100%); min-height: 100vh; font-family: 'Segoe UI', sans-serif; }
+
+        body::before {
+            content: '';
+            position: fixed; left: 0; top: 0;
+            width: 5px; height: 100%;
+            background: linear-gradient(180deg, var(--blue-500), var(--blue-800));
+            z-index: 9999;
+        }
+
+        /* ── Navbar ── */
+        .main-navbar {
+            background: linear-gradient(135deg, var(--blue-800) 0%, var(--blue-600) 100%);
+            box-shadow: 0 4px 24px rgba(30,64,175,0.3);
+            padding: 0 24px;
+            min-height: 62px;
+        }
+
+        .navbar-brand {
+            display: flex; align-items: center; gap: 10px;
+            text-decoration: none;
+        }
+        .brand-icon {
+            width: 36px; height: 36px;
+            background: rgba(255,255,255,0.18);
+            border-radius: 9px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 17px;
+        }
+        .brand-name { color: #fff; font-weight: 800; font-size: 1rem; }
+
+        /* Nav links */
+        .nav-link-item {
+            color: rgba(255,255,255,0.80) !important;
+            padding: 7px 11px !important;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            display: flex; align-items: center; gap: 5px;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+        .nav-link-item:hover,
+        .nav-link-item.active {
+            background: rgba(255,255,255,0.18);
+            color: #fff !important;
+        }
+
+        /* Right icons */
+        .nav-right { display: flex; align-items: center; gap: 8px; }
+
+        /* Bell button */
+        .bell-btn {
+            width: 38px; height: 38px;
+            background: rgba(255,255,255,0.15);
+            border: 1.5px solid rgba(255,255,255,0.25);
+            border-radius: 10px;
+            color: #fff; font-size: 1rem;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; transition: all 0.2s;
+            position: relative;
+        }
+        .bell-btn:hover { background: rgba(255,255,255,0.28); }
+        .notif-dot {
+            width: 9px; height: 9px;
+            background: #ef4444;
+            border: 2px solid var(--blue-700);
+            border-radius: 50%;
+            position: absolute; top: 6px; right: 6px;
+        }
+
+        /* Profile button */
+        .profile-btn {
+            display: flex; align-items: center; gap: 8px;
+            background: rgba(255,255,255,0.15);
+            border: 1.5px solid rgba(255,255,255,0.25);
+            border-radius: 10px;
+            padding: 5px 12px 5px 6px;
+            cursor: pointer; transition: all 0.2s; color: #fff;
+            text-decoration: none;
+        }
+        .profile-btn:hover { background: rgba(255,255,255,0.28); color: #fff; }
+        .profile-avatar {
+            width: 28px; height: 28px;
+            background: linear-gradient(135deg, var(--blue-400), var(--blue-600));
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 800; font-size: 0.78rem; color: #fff;
+        }
+        .profile-name { font-size: 0.82rem; font-weight: 700; }
+
+        /* Dropdown panels */
+        .custom-dropdown {
+            position: absolute;
+            top: calc(100% + 10px);
+            right: 0;
+            background: #fff;
+            border-radius: 14px;
+            box-shadow: 0 8px 40px rgba(30,64,175,0.18);
+            border: 1px solid var(--blue-100);
+            display: none;
+            z-index: 9999;
+            overflow: hidden;
+        }
+        .custom-dropdown.show { display: block; }
+        .notif-dropdown { width: 300px; }
+        .profile-dropdown { width: 220px; }
+
+        .dropdown-hdr {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 13px 18px;
+            background: var(--blue-50);
+            border-bottom: 1px solid var(--blue-100);
+        }
+        .dropdown-hdr-title { font-weight: 700; font-size: 0.85rem; color: var(--blue-800); }
+        .clear-all-btn {
+            background: none; border: none;
+            font-size: 0.72rem; color: var(--blue-500); font-weight: 600; cursor: pointer;
+        }
+        .clear-all-btn:hover { color: var(--blue-700); }
+
+        /* Notification items */
+        .notif-scroll { max-height: 230px; overflow-y: auto; }
+        .notif-item {
+            display: flex; align-items: flex-start; gap: 11px;
+            padding: 11px 18px;
+            border-bottom: 1px solid #f1f5f9;
+            transition: background 0.15s; cursor: default;
+        }
+        .notif-item:last-child { border-bottom: none; }
+        .notif-item:hover { background: var(--blue-50); }
+        .notif-item.unread { background: #f8faff; }
+        .notif-icon {
+            width: 32px; height: 32px; border-radius: 8px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 0.82rem; flex-shrink: 0;
+        }
+        .ni-red    { background: #fee2e2; color: #dc2626; }
+        .ni-yellow { background: #fefce8; color: #ca8a04; }
+        .ni-blue   { background: var(--blue-100); color: var(--blue-700); }
+        .notif-text { font-size: 0.81rem; font-weight: 600; color: #1e293b; }
+        .notif-time { font-size: 0.7rem; color: #94a3b8; margin-top: 1px; }
+
+        .dropdown-footer-link {
+            display: block; text-align: center;
+            padding: 10px; font-size: 0.78rem;
+            color: var(--blue-600); font-weight: 700;
+            text-decoration: none;
+            background: var(--blue-50);
+            border-top: 1px solid var(--blue-100);
+        }
+        .dropdown-footer-link:hover { color: var(--blue-800); }
+
+        /* Profile dropdown */
+        .profile-info-box {
+            display: flex; align-items: center; gap: 11px;
+            padding: 15px 18px;
+            background: var(--blue-50);
+            border-bottom: 1px solid var(--blue-100);
+        }
+        .profile-avatar-lg {
+            width: 40px; height: 40px;
+            background: linear-gradient(135deg, var(--blue-700), var(--blue-500));
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 800; font-size: 1rem; color: #fff; flex-shrink: 0;
+        }
+        .profile-fullname { font-weight: 700; font-size: 0.87rem; color: var(--blue-900); }
+        .profile-email    { font-size: 0.71rem; color: #64748b; }
+
+        .profile-menu-link {
+            display: flex; align-items: center; gap: 10px;
+            padding: 11px 18px;
+            font-size: 0.83rem; font-weight: 600;
+            color: #334155; text-decoration: none;
+            transition: background 0.15s; cursor: pointer;
+            border: none; background: transparent; width: 100%; text-align: left;
+        }
+        .profile-menu-link:hover { background: var(--blue-50); color: var(--blue-800); }
+        .profile-menu-link i { font-size: 0.88rem; color: var(--blue-500); }
+        .logout-link { color: #dc2626 !important; }
+        .logout-link i { color: #dc2626 !important; }
+        .logout-link:hover { background: #fff0f0 !important; }
+
+        .dd-divider { height: 1px; background: var(--blue-100); margin: 3px 0; }
+
+        /* Toggler */
+        .navbar-toggler { border-color: rgba(255,255,255,0.3); }
+        .navbar-toggler-icon { filter: invert(1); }
+
+        /* Wrap for positioning */
+        .dd-wrap { position: relative; }
+
+        /* Footer */
+        footer { background: #fff; border-top: 1px solid var(--blue-100) !important; padding: 14px 0; }
+        footer .container { color: #64748b; font-size: 0.82rem; }
+        footer a { color: var(--blue-600); text-decoration: none; }
+    </style>
 </head>
 <body>
-    <header>
-        <nav class="navbar navbar-expand-lg navbar-dark bg-dark px-4 shadow">
-            <a class="navbar-brand fw-bold text-warning" href="#">
-                <i class="bi bi-box-seam me-2"></i>NextTap Zone
-            </a>
 
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu">
-                <span class="navbar-toggler-icon"></span>
-            </button>
+<header>
+<nav class="main-navbar navbar navbar-expand-lg">
+    <div class="container-fluid">
 
-            <div class="collapse navbar-collapse" id="navMenu">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                    
-                      
-                        <li class="nav-item">
-                            <a class="nav-link" href="/Admin/dashboard">
-                                <i class="bi bi-speedometer2 me-1"></i>Dashboard
-                            </a>
-                        </li>
-                       
-                  
-                       
-                        <li class="nav-item">
-                            <a class="nav-link" href="/Admin/Product">
-                                <i class="bi bi-archive me-1"></i>Product
-                            </a>
-                        </li>
-                        
-                    
-                       
-                        <li class="nav-item">
-                            <a class="nav-link" href="/Admin/StockList">
-                                <i class="bi bi-archive me-1"></i>Stock
-                            </a>
-                        </li>
-                        
-                   
-                       
-                        <li class="nav-item">
-                            <a class="nav-link" href="/Admin/order">
-                                <i class="bi bi-cart3 me-1"></i>Orders
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="/Admin/OrderDetailesList">
-                                <i class="bi bi-cart3 me-1"></i>OrdersDetailes
-                            </a>
-                        </li>
-                       
-                    
-                        
-                        <li class="nav-item">
-                            <a class="nav-link" href="/Admin/UserList">
-                                <i class="bi bi-truck me-1"></i>User
-                            </a>
-                        </li>
-                      
-                   
-                        
-                        <li class="nav-item">
-                            <a class="nav-link" href="/Admin/SupplierList">
-                                <i class="bi bi-percent me-1"></i>Supplier
-                            </a>
-                        </li>
-                      
+        <!-- Brand -->
+        <a class="navbar-brand" href="/Index">
+            <div class="brand-icon">🏪</div>
+            <span class="brand-name">NextTap Zone</span>
+        </a>
 
+        <button class="navbar-toggler" type="button"
+                data-bs-toggle="collapse" data-bs-target="#navMenu">
+            <span class="navbar-toggler-icon"></span>
+        </button>
 
-                    <li class="nav-item">
-                        <a class="nav-link" href="/Account/Login">
-                            <i class="bi bi-gift me-1"></i>Login
+        <div class="collapse navbar-collapse" id="navMenu">
+
+            <!-- Left nav links -->
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0 align-items-lg-center">
+                <li class="nav-item">
+                    <a class="nav-link-item" href="/Admin/Dashboard">
+                        <i class="bi bi-speedometer2"></i> Dashboard
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link-item" href="/Admin/Product">
+                        <i class="bi bi-box-seam"></i> Products
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link-item" href="/Admin/StockList">
+                        <i class="bi bi-archive"></i> Stock
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link-item" href="/Admin/Order">
+                        <i class="bi bi-bag-check"></i> Orders
+                    </a>
+                </li>
+                
+                <li class="nav-item">
+                    <a class="nav-link-item" href="/Admin/UserList">
+                        <i class="bi bi-people"></i> Users
+                    </a>
+                </li>
+                 <li class="nav-item">
+                        <a class="nav-link-item" href="/Admin/SupplierList">
+                            <i class="bi bi-building"></i> Suppliers
                         </a>
                     </li>
-                        
+                    <li class="nav-item">
+                    <a class="nav-link-item" href="/Admin/OrderDetailesList">
+                        <i class="bi bi-people"></i> OrderDetailes
+                    </a>
+                    </li>
+                
+            </ul>
 
-
-                </ul>
+            <!-- Right: Notification + Profile -->
+            <div class="nav-right">
 
                 <!-- Notification Bell -->
-                <ul class="navbar-nav ms-auto align-items-center gap-3">
-                    <li class="nav-item dropdown">
-                        <a class="nav-link position-relative" href="#" data-bs-toggle="dropdown">
-                            <i class="bi bi-bell fs-5"></i>
-                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                                3
-                            </span>
-                        </a>
-                        <ul class="dropdown-menu dropdown-menu-end shadow" style="min-width:320px">
-                            <li><h6 class="dropdown-header">Notifications</h6></li>
-                            <li>
-                                <a class="dropdown-item py-2" href="#">
-                                    <span class="badge bg-danger me-2">Critical</span>
-                                    <small>Rice - Out of stock!</small>
-                                </a>
-                            </li>
-                            <li>
-                                <a class="dropdown-item py-2" href="#">
-                                    <span class="badge bg-warning text-dark me-2">Warning</span>
-                                    <small>Sugar - Only 5 kg left</small>
-                                </a>
-                            </li>
-                            <li>
-                                <a class="dropdown-item py-2" href="#">
-                                    <span class="badge bg-info me-2">Info</span>
-                                    <small>Oil - Near minimum limit</small>
-                                </a>
-                            </li>
-                            <li><hr class="dropdown-divider"></li>
-                            <li>
-                                <a class="dropdown-item text-center text-primary small" href="/notification">
-                                    View All Notifications
-                                </a>
-                            </li>
-                        </ul>
-                    </li>
+                <div class="dd-wrap">
+                    <button class="bell-btn" id="bellBtn" type="button">
+                        <i class="bi bi-bell-fill"></i>
+                        <span class="notif-dot" id="notifDot"></span>
+                    </button>
 
-                    <!-- User Dropdown -->
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle d-flex align-items-center gap-2" href="#" data-bs-toggle="dropdown">
-                            <img src="https://ui-avatars.com/api/?name=Admin&background=ffc107&color=000&size=32"
-                                 class="rounded-circle" width="32" height="32" />
-                            <span>Admin</span>
+                    <div class="custom-dropdown notif-dropdown" id="notifDropdown">
+                        <div class="dropdown-hdr">
+                            <span class="dropdown-hdr-title">Notifications</span>
+                            <button class="clear-all-btn" id="clearAllBtn">Clear all</button>
+                        </div>
+                        <div class="notif-scroll" id="notifList">
+                            <div class="notif-item unread">
+                                <div class="notif-icon ni-red"><i class="bi bi-exclamation-triangle-fill"></i></div>
+                                <div>
+                                    <div class="notif-text">Rice — Out of stock!</div>
+                                    <div class="notif-time">2 min ago</div>
+                                </div>
+                            </div>
+                            <div class="notif-item unread">
+                                <div class="notif-icon ni-yellow"><i class="bi bi-exclamation-circle-fill"></i></div>
+                                <div>
+                                    <div class="notif-text">Sugar — Only 5 kg left</div>
+                                    <div class="notif-time">15 min ago</div>
+                                </div>
+                            </div>
+                            <div class="notif-item unread">
+                                <div class="notif-icon ni-blue"><i class="bi bi-info-circle-fill"></i></div>
+                                <div>
+                                    <div class="notif-text">Oil — Near minimum limit</div>
+                                    <div class="notif-time">1 hr ago</div>
+                                </div>
+                            </div>
+                        </div>
+                        <a class="dropdown-footer-link" href="/Admin/Dashboard">
+                            View all notifications
                         </a>
-                        <ul class="dropdown-menu dropdown-menu-end shadow">
-                            <li><a class="dropdown-item" href="/profile"><i class="bi bi-person me-2"></i>Profile</a></li>
-                            <li><a class="dropdown-item" href="/settings"><i class="bi bi-gear me-2"></i>Settings</a></li>
-                            <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item text-danger" href="/logout"><i class="bi bi-box-arrow-right me-2"></i>Logout</a></li>
-                        </ul>
-                    </li>
-                </ul>
-            </div>
-        </nav>
-    </header>
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
-    </div>
+                    </div>
+                </div>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2025 - WebApplication1 - <a asp-controller="Home" asp-action="Privacy">Privacy</a>
+                <!-- Profile -->
+                <div class="dd-wrap">
+    <a class="profile-btn" id="profileBtn" href="#">
+        <div class="profile-avatar">
+            @(User.Identity?.Name?.Length > 0 ? User.Identity.Name.Substring(0,1).ToUpper() : "A")
         </div>
-    </footer>
+        <span class="profile-name">@(User.Identity?.Name ?? "Admin")</span>
+        <i class="bi bi-chevron-down" style="font-size:0.7rem;" id="profileChevron"></i>
+    </a>
 
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
+    <div class="custom-dropdown profile-dropdown" id="profileDropdown">
+        <div class="profile-info-box">
+            <div class="profile-avatar-lg">
+                @(User.Identity?.Name?.Length > 0 ? User.Identity.Name.Substring(0,1).ToUpper() : "A")
+            </div>
+            <div>
+                <div class="profile-fullname">@(User.Identity?.Name ?? "Administrator")</div>
+                <div class="profile-email">
+                    @(User.FindFirst(System.Security.Claims.ClaimTypes.Email)?.Value ?? "")
+                </div>
+            </div>
+        </div>
+        <div class="dd-divider"></div>
 
-    @await RenderSectionAsync("Scripts", required: false)
+                        <!-- ✅ Logout — POST form -->
+                        <form method="post" asp-page="/Account/Logout">
+                         @Html.AntiForgeryToken()
+                            <button type="submit" class="profile-menu-link logout-link">
+                               <i class="bi bi-box-arrow-right"></i> Logout
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</nav>
+</header>
+
+<div class="container-fluid px-4 py-2">
+    <main role="main" class="pb-3">
+        @RenderBody()
+    </main>
+</div>
+
+<footer class="border-top footer mt-4">
+    <div class="container text-center py-2">
+        &copy; @DateTime.Now.Year — NextTap Zone
+    </div>
+</footer>
+
+<!-- ✅ CDN Bootstrap JS (guaranteed to work) -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="~/js/site.js" asp-append-version="true"></script>
+
+<script>
+    // ── Bell toggle ──
+    document.getElementById('bellBtn').addEventListener('click', function (e) {
+        e.stopPropagation();
+        document.getElementById('profileDropdown').classList.remove('show');
+        document.getElementById('profileChevron').style.transform = '';
+        document.getElementById('notifDropdown').classList.toggle('show');
+    });
+
+    // ── Profile toggle ──
+    document.getElementById('profileBtn').addEventListener('click', function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        document.getElementById('notifDropdown').classList.remove('show');
+        document.getElementById('profileDropdown').classList.toggle('show');
+        const ch = document.getElementById('profileChevron');
+        ch.style.transform = document.getElementById('profileDropdown').classList.contains('show')
+            ? 'rotate(180deg)' : '';
+    });
+
+    // ── Close on outside click ──
+    document.addEventListener('click', function () {
+        document.getElementById('notifDropdown').classList.remove('show');
+        document.getElementById('profileDropdown').classList.remove('show');
+        document.getElementById('profileChevron').style.transform = '';
+    });
+
+    // ── Clear notifications ──
+    document.getElementById('clearAllBtn').addEventListener('click', function (e) {
+        e.stopPropagation();
+        document.getElementById('notifList').innerHTML =
+            '<div style="padding:22px;text-align:center;color:#94a3b8;font-size:0.82rem;">' +
+            '<i class="bi bi-bell-slash" style="font-size:1.5rem;display:block;margin-bottom:6px;"></i>' +
+            'No new notifications</div>';
+        document.getElementById('notifDot').style.display = 'none';
+    });
+
+    // ── Active nav highlight ──
+    document.querySelectorAll('.nav-link-item').forEach(function (link) {
+        if (window.location.href.includes(link.getAttribute('href'))) {
+            link.style.background = 'rgba(255,255,255,0.22)';
+            link.style.color = '#fff';
+        }
+    });
+</script>
+
+@await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

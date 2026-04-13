@@ -24,10 +24,12 @@ namespace WebApplication1.Pages.Admin
             Result stockResult = _stockService.GetAvailableStocks();
             var stocks = stockResult.Data as List<Stock> ?? [];
 
-            StockSummary = stocks.ToDictionary(
-                s => s.P_Id,
-                s => s.Quantity_In - s.Quantity_Out
-            );
+            StockSummary = stocks
+           .GroupBy(s => s.P_Id)
+           .ToDictionary(
+            g => g.Key,
+            g => g.Sum(s => s.Quantity_In) - g.Sum(s => s.Quantity_Out)
+    );
         }
 
         public IActionResult OnPostDelete(int Id)

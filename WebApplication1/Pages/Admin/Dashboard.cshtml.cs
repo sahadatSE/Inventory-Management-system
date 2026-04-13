@@ -15,6 +15,7 @@ namespace WebApplication1.Pages.Admin
         public int TotalAvailableStock { get; set; }
         public List<Stock> AvailableList { get; set; } = new();
         public List<Stock> RecentStocks { get; set; } = new();
+        public object ViewBag { get; private set; }
 
         public void OnGet()
         {
@@ -45,6 +46,10 @@ namespace WebApplication1.Pages.Admin
                 AvailableList = availableResult.Data as List<Stock> ?? new();
                 TotalAvailableStock = AvailableList.Sum(s => s.Available_Stock);
             }
+
+
         }
+
     }
+   
 }
