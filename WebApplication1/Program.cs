@@ -7,8 +7,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDbContext<IMSContext>();
 
-builder.Services.AddScoped<DiscountService>();
-builder.Services.AddScoped<OfferService>();
+
 builder.Services.AddScoped<OrderService>();
 builder.Services.AddScoped<OrderDetailsService>();
 builder.Services.AddScoped<ProductService>();

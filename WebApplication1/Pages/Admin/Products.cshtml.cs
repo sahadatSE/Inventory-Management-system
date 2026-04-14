@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace WebApplication1.Pages.Admin
 {
-    [Authorize(Roles = "1")]
+    [Authorize(Roles = "1,2")]
     public class ProductListModel(ProductService productService, StockService stockService) : PageModel
     {
         private readonly ProductService _productService = productService;

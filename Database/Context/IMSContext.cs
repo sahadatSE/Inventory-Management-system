@@ -19,8 +19,7 @@ namespace Database.Context
         public DbSet<Stock> Stock { get; set; }
         public DbSet<Supplier> Suppliers { get; set; }
         public DbSet<Role> Role { get; set; }
-        public DbSet<Offer> Offer { get; set; }
-        public DbSet<Discount> Discount { get; set; }
+        
 
 
         //ViewModels

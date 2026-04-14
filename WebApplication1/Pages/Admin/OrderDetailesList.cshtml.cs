@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace WebApplication1.Pages.Admin
 {
-    [Authorize(Roles = "1,2")]
+    [Authorize(Roles = "1,2,3")]
     public class OrderDetailsListModel(OrderDetailsService service) : PageModel
     {
         private readonly OrderDetailsService _service = service;

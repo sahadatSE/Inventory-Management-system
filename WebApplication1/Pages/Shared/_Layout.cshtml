@@ -1,4 +1,19 @@
-﻿<!DOCTYPE html>
+﻿@using System.Security.Claims
+
+@{
+    // Get RoleId as string
+    var roleId = User.FindFirst(ClaimTypes.Role)?.Value
+              ?? User.FindFirst("RoleId")?.Value;
+
+    // Parse to int for comparison
+    int.TryParse(roleId, out int role);
+
+    // Or use named booleans for clarity
+    bool isAdmin   = role == 1;
+    bool isManager = role == 2;
+    bool isStaff   = role == 3;
+}
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -241,42 +256,62 @@
 
             <!-- Left nav links -->
             <ul class="navbar-nav me-auto mb-2 mb-lg-0 align-items-lg-center">
-                <li class="nav-item">
-                    <a class="nav-link-item" href="/Admin/Dashboard">
-                        <i class="bi bi-speedometer2"></i> Dashboard
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link-item" href="/Admin/Product">
-                        <i class="bi bi-box-seam"></i> Products
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link-item" href="/Admin/StockList">
-                        <i class="bi bi-archive"></i> Stock
-                    </a>
-                </li>
-                <li class="nav-item">
+                          <li class="nav-item">
+                              <a class="nav-link-item" href="/Admin/Dashboard">
+                                <i class="bi bi-speedometer2"></i> Dashboard
+                              </a>
+                          </li>
+                @if(isAdmin || isManager)
+                {
+                                <li class="nav-item">
+                                 <a class="nav-link-item" href="/Admin/Product">
+                                   <i class="bi bi-box-seam"></i> Products
+                                 </a>
+                                </li>
+                }
+                @if(isAdmin || isManager)
+                {
+                        <li class="nav-item">
+                           <a class="nav-link-item" href="/Admin/StockList">
+                            <i class="bi bi-archive"></i> Stock
+                           </a>
+                        </li>         
+                }
+                @if (isAdmin || isManager || isStaff )
+                {
+                   <li class="nav-item">
                     <a class="nav-link-item" href="/Admin/Order">
                         <i class="bi bi-bag-check"></i> Orders
                     </a>
-                </li>
+                    </li>             
+                }
                 
-                <li class="nav-item">
-                    <a class="nav-link-item" href="/Admin/UserList">
-                        <i class="bi bi-people"></i> Users
-                    </a>
-                </li>
-                 <li class="nav-item">
-                        <a class="nav-link-item" href="/Admin/SupplierList">
-                            <i class="bi bi-building"></i> Suppliers
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                    <a class="nav-link-item" href="/Admin/OrderDetailesList">
-                        <i class="bi bi-people"></i> OrderDetailes
-                    </a>
-                    </li>
+                @if(isAdmin)
+                {
+                        <li class="nav-item">
+                          <a class="nav-link-item" href="/Admin/UserList">
+                            <i class="bi bi-people"></i> Users
+                          </a>
+                        </li>        
+                }
+                
+                @if (isAdmin || isManager)
+                {
+                            <li class="nav-item">
+                               <a class="nav-link-item" href="/Admin/SupplierList">
+                                 <i class="bi bi-building"></i> Suppliers
+                               </a>
+                            </li>    
+                }
+                @if (isAdmin || isManager || isStaff)
+                {
+                            <li class="nav-item">
+                              <a class="nav-link-item" href="/Admin/OrderDetailesList">
+                                <i class="bi bi-people"></i> OrderDetailes
+                              </a>
+                            </li>    
+                }
+                  
                 
             </ul>
 
